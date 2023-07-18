@@ -366,25 +366,32 @@ page3_layout = html.Div(
     and choropleth-map-1 in page1_layout'''
 @app.callback(
     Output("choropleth-map-1", "figure"),
-    
+    Output("pie-chart-1", "figure"),
     Input("location-dropdown-1", "value"),
     Input("choropleth-map-1", "clickData")
 )
 def update_charts_1(selected_location, click_data):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_1 = px.choropleth(data_frame=data_income, locationmode="USA-states", scope="usa",
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
+        fig_1 = px.choropleth(data_frame = data_income,
+                              geojson = counties, 
+                              locationmode = "USA-states", 
+                              scope = "usa",
+                              locations = "FIPS", 
+                              color = "Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
         fig_1 = px.choropleth(data_frame=agesex_stats[data_income["FIPS"].str[:2] == selected_location],
-                            locationmode="USA-states", scope=selected_location.lower(),
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
-
+                              geojson = counties,
+                              locationmode="USA-states",
+                              scope=selected_location.lower(),
+                              locations="FIPS",
+                              color="Value",
+                              color_continuous_scale="Viridis",
+                              labels={"Value": "Data Value"})
+    fig_1.update_geos(fitbounds="locations", visible=False)
     fig_1.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
 
     return fig_1
@@ -396,9 +403,9 @@ def update_charts_1(selected_location, click_data):
         # ...
 
         # Create the pie chart
-        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+        pie_fig_1 = go.Figure(data=[go.Pie(labels=labels, values=values)])
 
-        return fig_1, pie_fig
+        return fig_1, pie_fig_1
     else:
         return fig_1, None
 
@@ -406,7 +413,9 @@ def update_charts_1(selected_location, click_data):
     and choropleth-map-2 in page2_layout'''
 @app.callback(
     Output("choropleth-map-2", "figure"),
-    Input("location-dropdown-2", "value")
+    Output("pie-chart-2", "figure"),
+    Input("location-dropdown-2", "value"),
+    Input("choropleth-map-2", "clickData")
 )
 
 def update_charts_2(selected_location):
@@ -428,11 +437,26 @@ def update_charts_2(selected_location):
 
     return fig_2
 
+    # Create or update the pie chart based on click_data
+    if click_data is not None:
+        fips_value = click_data["points"][0]["location"]
+        # Logic to generate data for the pie chart based on fips_value
+        # ...
+
+        # Create the pie chart
+        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+
+        return fig_2, pie_fig_2
+    else:
+        return fig_2, None
+
 '''callback associated to dropdown location-dropdown-3
     and choropleth-map-3 in page3_layout'''
 @app.callback(
     Output("choropleth-map-3", "figure"),
-    Input("location-dropdown-3", "value")
+    Output("pie-chart-3", "figure"),
+    Input("location-dropdown-3", "value"),
+    Input("choropleth-map-3", "clickData")
 )
 
 def update_charts_3(selected_location):
@@ -453,6 +477,19 @@ def update_charts_3(selected_location):
     fig_3.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
 
     return fig_3
+
+    # Create or update the pie chart based on click_data
+    if click_data is not None:
+        fips_value = click_data["points"][0]["location"]
+        # Logic to generate data for the pie chart based on fips_value
+        # ...
+
+        # Create the pie chart
+        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+
+        return fig_3, pie_fig_3
+    else:
+        return fig_3, None
 
 def render_content(tab):
     if tab == "tab-1":
