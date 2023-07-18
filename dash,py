@@ -142,7 +142,7 @@ page1_layout = html.Div(
         html.Div(
             children=[
                 html.Div(
-                    dcc.Graph(id="choropleth-map"),
+                    dcc.Graph(id="choropleth-map-1"),
                     className="four columns"
                 ),
             ],
@@ -154,7 +154,7 @@ page1_layout = html.Div(
             children=[
                 # Row 2, span 1 col, left column
                 html.Div(
-                    dcc.Graph(id="pie-chart"),
+                    dcc.Graph(id="pie-chart-1"),
                     className="four columns"
                 ),
                 # Row 2, span 1 col, middle column
@@ -236,7 +236,7 @@ page2_layout = html.Div(
         html.Div(
             children=[
                 html.Div(
-                    dcc.Graph(id="choropleth-map"),
+                    dcc.Graph(id="choropleth-map-2"),
                     className="four columns"
                 ),
             ],
@@ -248,7 +248,7 @@ page2_layout = html.Div(
             children=[
                 # Row 2, span 1 col, left column
                 html.Div(
-                    dcc.Graph(id="pie-chart"),
+                    dcc.Graph(id="pie-chart-2"),
                     className="four columns"
                 ),
                 # Row 2, span 1 col, middle column
@@ -343,7 +343,7 @@ page3_layout = html.Div(
             children=[
                 # Row 2, span 1 col, left column
                 html.Div(
-                    dcc.Graph(id="pie-chart"),
+                    dcc.Graph(id="pie-chart-3"),
                     className="four columns"
                 ),
                 # Row 2, span 1 col, middle column
@@ -421,18 +421,24 @@ def update_charts_1(selected_location, click_data):
 def update_charts_2(selected_location):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_2 = px.choropleth(data_frame=econ, locationmode="USA-states", scope="usa",
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
+        fig_2 = px.choropleth(data_frame = econ,
+                              geojson = counties, 
+                              locationmode = "USA-states", 
+                              scope = "usa",
+                              locations = "FIPS", 
+                              color = "Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
-        fig_2 = px.choropleth(data_frame=data_income[data_income["FIPS"].str[:2] == selected_location],
-                            locationmode="USA-states", scope=selected_location.lower(),
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
-
+        fig_2 = px.choropleth(data_frame = data_income[data_income["FIPS"].str[:2] == selected_location],
+                              geojson = counties,
+                              locationmode = "USA-states", 
+                              scope = selected_location.lower(),
+                              locations = "FIPS", color="Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
+    fig_2.update_geos(fitbounds="locations", visible=False)
     fig_2.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
 
     return fig_2
@@ -462,18 +468,23 @@ def update_charts_2(selected_location):
 def update_charts_3(selected_location):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_3 = px.choropleth(data_frame=data_income, locationmode="USA-states", scope="usa",
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
+        fig_3 = px.choropleth(data_frame=data_income,
+                              geojson = counties, 
+                              locationmode="USA-states", 
+                              scope="usa",
+                              locations="FIPS", 
+                              color="Value",
+                              color_continuous_scale="Viridis",
+                              labels={"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
         fig_3 = px.choropleth(data_frame=income_benefit[data_income["FIPS"].str[:2] == selected_location],
-                            locationmode="USA-states", scope=selected_location.lower(),
-                            locations="FIPS", color="Value",
-                            color_continuous_scale="Viridis",
-                            labels={"Value": "Data Value"})
-
+                              geojson = counties,
+                              locationmode="USA-states", scope=selected_location.lower(),
+                              locations="FIPS", color="Value",
+                              color_continuous_scale="Viridis",
+                              labels={"Value": "Data Value"})
+    fig_3.update_geos(fitbounds="locations", visible=False)
     fig_3.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
 
     return fig_3
