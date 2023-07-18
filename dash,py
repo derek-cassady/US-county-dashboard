@@ -2,6 +2,34 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import os
+import pandas as pd
+
+# Define books as excel books to load in
+books = ['2020_agesex_stats.xlsx',
+         '2020_econ.xlsx',
+         '2020_income_benefit_data.xlsx']
+
+# Get the path of the current working directory
+cwd = os.getcwd()
+
+file_path_dict = {}
+
+# Iterate through the books list
+for name in books:
+    # Construct the full path to the .xlsx file
+    file_path = os.path.join(cwd, name)
+    
+    # Load the Excel file using pandas
+    xls = pd.ExcelFile(file_path)
+    
+    # Iterate through each sheet in the Excel file
+    for sheet_name in xls.sheet_names:
+        # Load each sheet as a separate DataFrame
+        data = pd.read_excel(file_path, sheet_name=sheet_name, header=0)
+        
+        # Store the DataFrame in the file_path_dict with sheet name as key
+        file_path_dict[sheet_name] = data
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -10,8 +38,24 @@ app = dash.Dash(__name__)
 app.layout = html.Div(
     children=[
         html.H1("Selected US State & County Demographics"),
+        dcc.Tabs(
+            id="tabs",
+            value="tab-1",
+            children=[
+                dcc.Tab(label="Page 1", value="tab-1"),
+                dcc.Tab(label="Page 2", value="tab-2"),
+                dcc.Tab(label="Page 3", value="tab-3"),
+            ],
+        ),
+        html.Div(id="content"),
+    ]
+)        
+        
+# Define the content for each tab
+page1_layout = html.Div(
+    children=[        
         dcc.Dropdown(
-            id="location-dropdown", #Identifier for the dropdown component.
+            id="location-dropdown1", #Identifier for the dropdown component.
             options=[
                 {"label": "United States", "value": "US"},
                 {"label": "Alabama", "value": "01"},
@@ -102,26 +146,228 @@ app.layout = html.Div(
     ]
 )
 
+page2_layout = html.Div(
+    children=[        
+        dcc.Dropdown(
+            id="location-dropdown2", #Identifier for the dropdown component.
+            options=[
+                {"label": "United States", "value": "US"},
+                {"label": "Alabama", "value": "01"},
+                {"label": "Alaska", "value": "02"},
+                {"label": "Arizona", "value": "04"},
+                {"label": "Arkansas", "value": "05"},
+                {"label": "California", "value": "06"},
+                {"label": "Colorado", "value": "08"},
+                {"label": "Connecticut", "value": "09"},
+                {"label": "Delaware", "value": "10"},
+                {"label": "Florida", "value": "12"},
+                {"label": "Georgia", "value": "13"},
+                {"label": "Hawaii", "value": "15"},
+                {"label": "Idaho", "value": "16"},
+                {"label": "Illinois", "value": "17"},
+                {"label": "Indiana", "value": "18"},
+                {"label": "Iowa", "value": "19"},
+                {"label": "Kansas", "value": "20"},
+                {"label": "Kentucky", "value": "21"},
+                {"label": "Louisiana", "value": "22"},
+                {"label": "Maine", "value": "23"},
+                {"label": "Maryland", "value": "24"},
+                {"label": "Massachusetts", "value": "25"},
+                {"label": "Michigan", "value": "26"},
+                {"label": "Minnesota", "value": "27"},
+                {"label": "Mississippi", "value": "28"},
+                {"label": "Missouri", "value": "29"},
+                {"label": "Montana", "value": "30"},
+                {"label": "Nebraska", "value": "31"},
+                {"label": "Nevada", "value": "32"},
+                {"label": "New Hampshire", "value": "33"},
+                {"label": "New Jersey", "value": "34"},
+                {"label": "New Mexico", "value": "35"},
+                {"label": "New York", "value": "36"},
+                {"label": "North Carolina", "value": "37"},
+                {"label": "North Dakota", "value": "38"},
+                {"label": "Ohio", "value": "39"},
+                {"label": "Oklahoma", "value": "40"},
+                {"label": "Oregon", "value": "41"},
+                {"label": "Pennsylvania", "value": "42"},
+                {"label": "Rhode Island", "value": "44"},
+                {"label": "South Carolina", "value": "45"},
+                {"label": "South Dakota", "value": "46"},
+                {"label": "Tennessee", "value": "47"},
+                {"label": "Texas", "value": "48"},
+                {"label": "Utah", "value": "49"},
+                {"label": "Vermont", "value": "50"},
+                {"label": "Virginia", "value": "51"},
+                {"label": "Washington", "value": "53"},
+                {"label": "West Virginia", "value": "54"},
+                {"label": "Wisconsin", "value": "55"},
+                {"label": "Wyoming", "value": "56"}
+                ],
+            value="US", #dropdown will default to 'United States'
+ ),
+        # Row 1, span 3 col
+        html.Div(
+            children=[
+                html.Div(
+                    dcc.Graph(id="choropleth-map"),
+                    className="four columns"
+                ),
+            ],
+            className="row"
+        ),
 
-# Define callbacks
-
-@app.callback(
-    Output("choropleth-map", "figure"),
-    Output("pie-chart", "figure"),
-    Output("stacked-bar-chart", "figure"),
-    Output("violin-chart", "figure"),
-    Input("location-dropdown", "value")
+        # Row 2, span 3 col
+        html.Div(
+            children=[
+                # Row 2, span 1 col, left column
+                html.Div(
+                    dcc.Graph(id="pie-chart"),
+                    className="four columns"
+                ),
+                # Row 2, span 1 col, middle column
+                html.Div(
+                    dcc.Graph(id="stacked-bar-chart"),
+                    className="four columns"
+                ),
+                # Row 2, span 1 col, right column
+                html.Div(
+                    dcc.Graph(id="violin-chart"),
+                    className="four columns"
+                ),
+            ],
+            className="row"
+        ),
+    ]
 )
-def update_charts(selected_location):
-    # Update the choropleth map based on selected_location
-    # Use the FIPS code to zoom in on the selected state or the entire United States
-    
-    # Update the pie chart, stacked bar chart, and violin chart based on selected_location
-    # Use the hover data from the choropleth map and on-click events to modify charts
-    
-    # Return the updated figures for each chart
-    return updated_choropleth_map, updated_pie_chart, updated_stacked_bar_chart, updated_violin_chart
 
+page3_layout = html.Div(
+    children=[        
+        dcc.Dropdown(
+            id="location-dropdown-3", #Identifier for the dropdown component.
+            options=[
+                {"label": "United States", "value": "US"},
+                {"label": "Alabama", "value": "01"},
+                {"label": "Alaska", "value": "02"},
+                {"label": "Arizona", "value": "04"},
+                {"label": "Arkansas", "value": "05"},
+                {"label": "California", "value": "06"},
+                {"label": "Colorado", "value": "08"},
+                {"label": "Connecticut", "value": "09"},
+                {"label": "Delaware", "value": "10"},
+                {"label": "Florida", "value": "12"},
+                {"label": "Georgia", "value": "13"},
+                {"label": "Hawaii", "value": "15"},
+                {"label": "Idaho", "value": "16"},
+                {"label": "Illinois", "value": "17"},
+                {"label": "Indiana", "value": "18"},
+                {"label": "Iowa", "value": "19"},
+                {"label": "Kansas", "value": "20"},
+                {"label": "Kentucky", "value": "21"},
+                {"label": "Louisiana", "value": "22"},
+                {"label": "Maine", "value": "23"},
+                {"label": "Maryland", "value": "24"},
+                {"label": "Massachusetts", "value": "25"},
+                {"label": "Michigan", "value": "26"},
+                {"label": "Minnesota", "value": "27"},
+                {"label": "Mississippi", "value": "28"},
+                {"label": "Missouri", "value": "29"},
+                {"label": "Montana", "value": "30"},
+                {"label": "Nebraska", "value": "31"},
+                {"label": "Nevada", "value": "32"},
+                {"label": "New Hampshire", "value": "33"},
+                {"label": "New Jersey", "value": "34"},
+                {"label": "New Mexico", "value": "35"},
+                {"label": "New York", "value": "36"},
+                {"label": "North Carolina", "value": "37"},
+                {"label": "North Dakota", "value": "38"},
+                {"label": "Ohio", "value": "39"},
+                {"label": "Oklahoma", "value": "40"},
+                {"label": "Oregon", "value": "41"},
+                {"label": "Pennsylvania", "value": "42"},
+                {"label": "Rhode Island", "value": "44"},
+                {"label": "South Carolina", "value": "45"},
+                {"label": "South Dakota", "value": "46"},
+                {"label": "Tennessee", "value": "47"},
+                {"label": "Texas", "value": "48"},
+                {"label": "Utah", "value": "49"},
+                {"label": "Vermont", "value": "50"},
+                {"label": "Virginia", "value": "51"},
+                {"label": "Washington", "value": "53"},
+                {"label": "West Virginia", "value": "54"},
+                {"label": "Wisconsin", "value": "55"},
+                {"label": "Wyoming", "value": "56"}
+                ],
+            value="US", #dropdown will default to 'United States'
+ ),
+        # Row 1, span 3 col
+        html.Div(
+            children=[
+                html.Div(
+                    # Unique identifier for the choropleth map.
+                    dcc.Graph(id="choropleth-map-3"),
+                    className="four columns"
+                ),
+            ],
+            className="row"
+        ),
 
+        # Row 2, span 3 col
+        html.Div(
+            children=[
+                # Row 2, span 1 col, left column
+                html.Div(
+                    dcc.Graph(id="pie-chart"),
+                    className="four columns"
+                ),
+                # Row 2, span 1 col, middle column
+                html.Div(
+                    dcc.Graph(id="stacked-bar-chart"),
+                    className="four columns"
+                ),
+                # Row 2, span 1 col, right column
+                html.Div(
+                    dcc.Graph(id="violin-chart"),
+                    className="four columns"
+                ),
+            ],
+            className="row"
+        ),
+    ]
+)
+
+'''callback associated to dropdown location-dropdown-3
+    and choropleth-map-3 in page3_layout'''
+@app.callback(
+    Output("choropleth-map-3", "figure"),
+    Input("location-dropdown-3", "value")
+)
+def update_charts_3(selected_location):
+    if selected_location == "US":
+        # Create a US-level choropleth map
+        fig = px.choropleth(data_frame=data_income, locationmode="USA-states", scope="usa",
+                            locations="FIPS", color="Value",
+                            color_continuous_scale="Viridis",
+                            labels={"Value": "Data Value"})
+    else:
+        # Create a state-level choropleth map for the selected state
+        fig = px.choropleth(data_frame=data_income[data_income["FIPS"].str[:2] == selected_location],
+                            locationmode="USA-states", scope=selected_location.lower(),
+                            locations="FIPS", color="Value",
+                            color_continuous_scale="Viridis",
+                            labels={"Value": "Data Value"})
+
+    fig.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
+
+    return fig
+
+def render_content(tab):
+    if tab == "tab-1":
+        return page1_layout
+    elif tab == "tab-2":
+        return page2_layout
+    elif tab == "tab-3":
+        return page3_layout
+    else:
+        return html.Div("Invalid tab selected")
 if __name__ == "__main__":
     app.run_server(debug=True)
