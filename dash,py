@@ -5,6 +5,8 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from urllib.request import urlopen
+import json
 import plotly.express as px
 
 # Initialize the app
@@ -50,6 +52,14 @@ load_files_thread = threading.Thread(target=load_files_thread)
 
 # Start the thread
 load_files_thread.start()
+
+''' Load a GeoJSON file containing the geometry information for US counties, 
+    where feature.id is a FIPS code'''
+
+with urlopen(
+    'https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json'
+    ) as response:
+    counties = json.load(response)
 
 # Define the layout
 app.layout = html.Div(
