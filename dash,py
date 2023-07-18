@@ -80,7 +80,8 @@ app.layout = html.Div(
         
 # Define the content for each tab
 page1_layout = html.Div(
-    children=[        
+    children=[
+        html.H2("Page 1 Heading"),        
         dcc.Dropdown(
             id="location-dropdown-1", #Identifier for the dropdown component.
             options=[
@@ -174,7 +175,8 @@ page1_layout = html.Div(
 )
 
 page2_layout = html.Div(
-    children=[        
+    children=[   
+        html.H2("Page 2 Heading"),     
         dcc.Dropdown(
             id="location-dropdown-2", #Identifier for the dropdown component.
             options=[
@@ -268,7 +270,8 @@ page2_layout = html.Div(
 )
 
 page3_layout = html.Div(
-    children=[        
+    children=[  
+        html.H2("Page 3 Heading"),       
         dcc.Dropdown(
             id="location-dropdown-3", #Identifier for the dropdown component.
             options=[
