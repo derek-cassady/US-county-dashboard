@@ -69,7 +69,7 @@ with urlopen(
 
 # Define the content for each tab
 page1_layout = html.Div(
-    style={'background-color': 'lightblue'},
+    style={'background-color': 'AliceBlue'},
     children = [
         html.H2("Page 1 Heading"),        
         dcc.Dropdown(
@@ -131,6 +131,7 @@ page1_layout = html.Div(
  ),
         # Row 1, span 3 col
         html.Div(
+            style={'background-color': 'Aquamarine'},
             children = [
                 html.Div(
                     dcc.Graph(id = "choropleth-map-1"),
@@ -142,6 +143,7 @@ page1_layout = html.Div(
 
         # Row 2, span 3 col
         html.Div(
+            style={'background-color': 'DeepSkyBlue'},
             children = [
                 # Row 2, span 1 col, left column
                 html.Div(
@@ -155,7 +157,7 @@ page1_layout = html.Div(
                 ),
                 # Row 2, span 1 col, right column
                 html.Div(
-                    dcc.Graph(id = "violin-chart"),
+                     dcc.Graph(id = "violin-chart"),
                     className = "four columns"
                 ),
             ],
@@ -164,7 +166,7 @@ page1_layout = html.Div(
     ]
 )
 page2_layout = html.Div(
-    style={'background-color': 'lightgreen'},
+    style={'background-color': 'Lavender'},
     children = [   
         html.H2("Page 2 Heading"),     
         dcc.Dropdown(
@@ -226,6 +228,7 @@ page2_layout = html.Div(
  ),
         # Row 1, span 3 col
         html.Div(
+            style={'background-color': 'LavenderBlush'},
             children = [
                 html.Div(
                     dcc.Graph(id = "choropleth-map-2"),
@@ -237,6 +240,7 @@ page2_layout = html.Div(
 
         # Row 2, span 3 col
         html.Div(
+            style={'background-color': 'LightBlue'},
             children = [
                 # Row 2, span 1 col, left column
                 html.Div(
@@ -259,7 +263,7 @@ page2_layout = html.Div(
     ]
 )
 page3_layout = html.Div(
-    style={'background-color': 'lightpink'},
+    style={'background-color': 'LightPink'},
     children=[  
         html.H2("Page 3 Heading"),       
         dcc.Dropdown(
@@ -321,6 +325,7 @@ page3_layout = html.Div(
  ),
         # Row 1, span 3 col
         html.Div(
+            style={'background-color': 'LightGreen'},
             children=[
                 html.Div(
                     # Unique identifier for the choropleth map.
@@ -333,6 +338,7 @@ page3_layout = html.Div(
 
         # Row 2, span 3 col
         html.Div(
+            style={'background-color': 'LightSlateGrey'},
             children=[
                 # Row 2, span 1 col, left column
                 html.Div(
