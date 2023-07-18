@@ -255,7 +255,7 @@ for df_name, df in dfs.items():
 
         # Create empty lists to store stages of weighted average equation
         numerator = []
-        denominator = [1]
+        denominator = []
 
         # Inside of our while loop for dfs in perc_df:
         # Iterate through the variables 1:1
@@ -273,3 +273,14 @@ for df_name, df in dfs.items():
             
             # Counter to keep track of the current iteration
             i += 1
+        
+        while i < len(weights_columns):
+            weight = weights_columns[i]
+
+            # Each iteration product stored in the numerator list 
+            denominator.append(product)
+
+            # Counter to keep track of the current iteration
+            i += 1
+
+        weighted_average = sum(numerator) / sum(denominator)   
