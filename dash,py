@@ -174,12 +174,12 @@ page1_layout = dbc.Container(
                                 ),
                                 # Row 2, span 1 col, middle column
                                 dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart"),
+                                    dcc.Graph(id="stacked-bar-chart-1"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                                 # Row 2, span 1 col, right column
                                 dbc.Col(
-                                    dcc.Graph(id="violin-chart"),
+                                    dcc.Graph(id="violin-chart-1"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                             ],
@@ -273,7 +273,7 @@ page2_layout = dbc.Container(
                     children=[
                         dbc.Row(
                             dbc.Col(
-                                dcc.Graph(id="choropleth-map-3"),
+                                dcc.Graph(id="choropleth-map-2"),
                                 width={"size": 6, "offset": 3}  # Adjust the width as needed
                             ),
                         ),
@@ -292,17 +292,17 @@ page2_layout = dbc.Container(
                             [
                                 # Row 2, span 1 col, left column
                                 dbc.Col(
-                                    dcc.Graph(id="pie-chart-3"),
+                                    dcc.Graph(id="pie-chart-2"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                                 # Row 2, span 1 col, middle column
                                 dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart"),
+                                    dcc.Graph(id="stacked-bar-chart-2"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                                 # Row 2, span 1 col, right column
                                 dbc.Col(
-                                    dcc.Graph(id="violin-chart"),
+                                    dcc.Graph(id="violin-chart-2"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                             ],
@@ -420,12 +420,12 @@ page3_layout = dbc.Container(
                                 ),
                                 # Row 2, span 1 col, middle column
                                 dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart"),
+                                    dcc.Graph(id="stacked-bar-chart-3"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                                 # Row 2, span 1 col, right column
                                 dbc.Col(
-                                    dcc.Graph(id="violin-chart"),
+                                    dcc.Graph(id="violin-chart-3"),
                                     width={"size": 4, "offset": 0}  # Adjust the width as needed
                                 ),
                             ],
