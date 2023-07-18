@@ -356,9 +356,11 @@ page3_layout = html.Div(
     and choropleth-map-1 in page1_layout'''
 @app.callback(
     Output("choropleth-map-1", "figure"),
+    
     Input("location-dropdown-1", "value"),
+    Input("choropleth-map-1", "clickData")
 )
-def update_charts_1(selected_location):
+def update_charts_1(selected_location, click_data):
     if selected_location == "US":
         # Create a US-level choropleth map
         fig_1 = px.choropleth(data_frame=data_income, locationmode="USA-states", scope="usa",
@@ -376,6 +378,19 @@ def update_charts_1(selected_location):
     fig_1.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
 
     return fig_1
+
+    # Create or update the pie chart based on click_data
+    if click_data is not None:
+        fips_value = click_data["points"][0]["location"]
+        # Logic to generate data for the pie chart based on fips_value
+        # ...
+
+        # Create the pie chart
+        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+
+        return fig_1, pie_fig
+    else:
+        return fig_1, None
 
 '''callback associated to dropdown location-dropdown-2
     and choropleth-map-2 in page2_layout'''
