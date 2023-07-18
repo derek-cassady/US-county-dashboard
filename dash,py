@@ -166,13 +166,21 @@ page1_layout = html.Div(
         ),
     ]
 )
-page2_layout = html.Div(
+page3_layout = dbc.Container(
+    fluid=True,
     style={'background-color': 'Lavender'},
-    children = [   
-        html.H2("Page 2 Heading"),     
-        dcc.Dropdown(
-            id="location-dropdown-2", #Identifier for the dropdown component.
-            options = [
+    children=[  
+        dbc.Row(
+            dbc.Col(
+                html.H2("Page 2 Heading", className="text-center"),
+                width={"size": 12, "offset": 0}
+            )
+        ),
+        dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    id="location-dropdown-2",  # Identifier for the dropdown component.
+                    options=[
                 {"label": "United States", "value": "US"},
                 {"label": "Alabama", "value": "01"},
                 {"label": "Alaska", "value": "02"},
@@ -263,10 +271,11 @@ page2_layout = html.Div(
         ),
     ]
 )
+# Define the page 3 layout
 page3_layout = dbc.Container(
     fluid=True,
     style={'background-color': 'LightPink'},
-    children=[  
+    children=[
         dbc.Row(
             dbc.Col(
                 html.H2("Page 3 Heading", className="text-center"),
@@ -330,53 +339,61 @@ page3_layout = dbc.Container(
                         {"label": "Wisconsin", "value": "55"},
                         {"label": "Wyoming", "value": "56"}
                     ],
-                    value="US", #dropdown will default to 'United States'
+                    value="US",  # Dropdown will default to 'United States'
                 ),
                 width={"size": 12, "offset": 0}
             ),
         ),
-    ],
-)
-# Row 1, span 3 col
-html.Div(
-    style={'background-color': 'LightGreen'},
-    children=[
+        # Row 1, span 3 col
         dbc.Row(
             dbc.Col(
-                dcc.Graph(id="choropleth-map-3"),
-                width={"size": 6, "offset": 3}  # Adjust the width as needed
+                html.Div(
+                    style={'background-color': 'LightGreen'},
+                    children=[
+                        dbc.Row(
+                            dbc.Col(
+                                dcc.Graph(id="choropleth-map-3"),
+                                width={"size": 6, "offset": 3}  # Adjust the width as needed
+                            ),
+                        ),
+                    ],
+                    className="row"
+                ),
+            ),
+        ),
+        # Row 2, span 3 col
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    style={'background-color': 'LightSlateGrey'},
+                    children=[
+                        dbc.Row(
+                            [
+                                # Row 2, span 1 col, left column
+                                dbc.Col(
+                                    dcc.Graph(id="pie-chart-3"),
+                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
+                                ),
+                                # Row 2, span 1 col, middle column
+                                dbc.Col(
+                                    dcc.Graph(id="stacked-bar-chart"),
+                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
+                                ),
+                                # Row 2, span 1 col, right column
+                                dbc.Col(
+                                    dcc.Graph(id="violin-chart"),
+                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
+                                ),
+                            ],
+                            className="row",
+                        ),
+                    ],
+                    className="row"
+                ),
             ),
         ),
     ],
-    className="row"
 )
-# Row 2, span 3 col
-html.Div(
-    style={'background-color': 'LightSlateGrey'},
-    children=[
-        dbc.Row(
-            [
-                # Row 2, span 1 col, left column
-                dbc.Col(
-                    dcc.Graph(id="pie-chart-3"),
-                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                ),
-                # Row 2, span 1 col, middle column
-                dbc.Col(
-                    dcc.Graph(id="stacked-bar-chart"),
-                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                ),
-                # Row 2, span 1 col, right column
-                dbc.Col(
-                    dcc.Graph(id="violin-chart"),
-                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                ),
-            ],
-            className="row",
-        ),
-    ],
-    className="row"
-)     
 # Define the layout
 app.layout = dbc.Container(
     fluid=True,
@@ -410,7 +427,7 @@ app.layout = dbc.Container(
             ),
         ),
     ],
-)        
+)      
 
 '''callback associated to dropdown location-dropdown-1
     and choropleth-map-1 in page1_layout'''
