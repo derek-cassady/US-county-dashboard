@@ -151,7 +151,7 @@ page1_layout = dbc.Container(
                         dbc.Row(
                             dbc.Col(
                                 dcc.Graph(id="choropleth-map-1"),
-                                width={"size": 6, "offset": 3}  # Adjust the width as needed
+                                width={"size": 12, "offset": 0}
                             ),
                         ),
                     ],
@@ -186,11 +186,11 @@ page1_layout = dbc.Container(
                             className="row",
                         ),
                     ],
-                    className="row"
                 ),
             ),
         ),
     ],
+    width=12  # Span all columns
 )
 # Define the page 2 layout
 page2_layout = dbc.Container(
@@ -274,7 +274,7 @@ page2_layout = dbc.Container(
                         dbc.Row(
                             dbc.Col(
                                 dcc.Graph(id="choropleth-map-2"),
-                                width={"size": 6, "offset": 3}  # Adjust the width as needed
+                                width={"size": 12, "offset": 0}
                             ),
                         ),
                     ],
@@ -309,11 +309,11 @@ page2_layout = dbc.Container(
                             className="row",
                         ),
                     ],
-                    className="row"
                 ),
             ),
         ),
     ],
+    width=12  # Span all columns
 )
 # Define the page 3 layout
 page3_layout = dbc.Container(
@@ -397,7 +397,7 @@ page3_layout = dbc.Container(
                         dbc.Row(
                             dbc.Col(
                                 dcc.Graph(id="choropleth-map-3"),
-                                width={"size": 6, "offset": 3}  # Adjust the width as needed
+                                width={"size": 12, "offset": 0}
                             ),
                         ),
                     ],
@@ -432,11 +432,11 @@ page3_layout = dbc.Container(
                             className="row",
                         ),
                     ],
-                    className="row"
                 ),
             ),
         ),
     ],
+    width=12  # Span all columns
 )
 # Define the layout
 app.layout = dbc.Container(
