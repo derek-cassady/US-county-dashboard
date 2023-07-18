@@ -11,10 +11,9 @@ import plotly.express as px
 
 '''MOCK DATA FOR TESTING LAYOUT AND FUNCTIONALITY'''
 # Mock data or use placeholder values
-mock_data_income = {}  # Replace with your mocked data or placeholder values
-mock_data_econ = {}  # Replace with your mocked data or placeholder values
-mock_data_agesex_stats = {}  # Replace with your mocked data or placeholder values
-mock_data_counties = {}  # Replace with your mocked data or placeholder values
+mock_data_income = {}
+mock_data_econ = {}
+mock_data_agesex_stats = {}
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -70,31 +69,31 @@ with urlopen(
 
 # Define the layout
 app.layout = html.Div(
-    style={'width': '100vw', 'margin': 'auto'},
-    children=[
+    style = {'width': '100vw', 'margin': 'auto'},
+    children = [
         html.H1("Selected US State & County Demographics"),
         dcc.Tabs(
-            id="tabs",
-            value="tab-1",
-            style={'width': '100%'},
-            content_style={'width': '33.33%'},
-            children=[
-                dcc.Tab(label="Page 1", value="tab-1"),
-                dcc.Tab(label="Page 2", value="tab-2"),
-                dcc.Tab(label="Page 3", value="tab-3"),
+            id = "tabs",
+            value = "tab-1",
+            style = {'width': '100%'},
+            content_style = {'width': '33.33%'},
+            children = [
+                dcc.Tab(label = "Income & Benefits", value="tab-1"),
+                dcc.Tab(label = "Economics", value="tab-2"),
+                dcc.Tab(label = "Age & Sex", value="tab-3"),
             ],
         ),
-        html.Div(id="content"),
+        html.Div(id = "content"),
     ]
 )        
         
 # Define the content for each tab
 page1_layout = html.Div(
-    children=[
+    children = [
         html.H2("Page 1 Heading"),        
         dcc.Dropdown(
-            id="location-dropdown-1", #Identifier for the dropdown component.
-            options=[
+            id = "location-dropdown-1", #Identifier for the dropdown component.
+            options = [
                 {"label": "United States", "value": "US"},
                 {"label": "Alabama", "value": "01"},
                 {"label": "Alaska", "value": "02"},
@@ -147,49 +146,49 @@ page1_layout = html.Div(
                 {"label": "Wisconsin", "value": "55"},
                 {"label": "Wyoming", "value": "56"}
                 ],
-            value="US", #dropdown will default to 'United States'
+            value = "US", #dropdown will default to 'United States'
  ),
         # Row 1, span 3 col
         html.Div(
-            children=[
+            children = [
                 html.Div(
-                    dcc.Graph(id="choropleth-map-1"),
-                    className="four columns"
+                    dcc.Graph(id = "choropleth-map-1"),
+                    className = "four columns"
                 ),
             ],
-            className="row"
+            className = "row"
         ),
 
         # Row 2, span 3 col
         html.Div(
-            children=[
+            children = [
                 # Row 2, span 1 col, left column
                 html.Div(
-                    dcc.Graph(id="pie-chart-1"),
-                    className="four columns"
+                    dcc.Graph(id = "pie-chart-1"),
+                    className = "four columns"
                 ),
                 # Row 2, span 1 col, middle column
                 html.Div(
-                    dcc.Graph(id="stacked-bar-chart"),
-                    className="four columns"
+                    dcc.Graph(id = "stacked-bar-chart"),
+                    className = "four columns"
                 ),
                 # Row 2, span 1 col, right column
                 html.Div(
-                    dcc.Graph(id="violin-chart"),
-                    className="four columns"
+                    dcc.Graph(id = "violin-chart"),
+                    className = "four columns"
                 ),
             ],
-            className="row"
+            className = "row"
         ),
     ]
 )
 
 page2_layout = html.Div(
-    children=[   
+    children = [   
         html.H2("Page 2 Heading"),     
         dcc.Dropdown(
             id="location-dropdown-2", #Identifier for the dropdown component.
-            options=[
+            options = [
                 {"label": "United States", "value": "US"},
                 {"label": "Alabama", "value": "01"},
                 {"label": "Alaska", "value": "02"},
@@ -242,39 +241,39 @@ page2_layout = html.Div(
                 {"label": "Wisconsin", "value": "55"},
                 {"label": "Wyoming", "value": "56"}
                 ],
-            value="US", #dropdown will default to 'United States'
+            value = "US", #dropdown will default to 'United States'
  ),
         # Row 1, span 3 col
         html.Div(
-            children=[
+            children = [
                 html.Div(
-                    dcc.Graph(id="choropleth-map-2"),
-                    className="four columns"
+                    dcc.Graph(id = "choropleth-map-2"),
+                    className = "four columns"
                 ),
             ],
-            className="row"
+            className = "row"
         ),
 
         # Row 2, span 3 col
         html.Div(
-            children=[
+            children = [
                 # Row 2, span 1 col, left column
                 html.Div(
-                    dcc.Graph(id="pie-chart-2"),
-                    className="four columns"
+                    dcc.Graph(id = "pie-chart-2"),
+                    className = "four columns"
                 ),
                 # Row 2, span 1 col, middle column
                 html.Div(
-                    dcc.Graph(id="stacked-bar-chart"),
+                    dcc.Graph(id = "stacked-bar-chart"),
                     className="four columns"
                 ),
                 # Row 2, span 1 col, right column
                 html.Div(
-                    dcc.Graph(id="violin-chart"),
-                    className="four columns"
+                    dcc.Graph(id = "violin-chart"),
+                    className = "four columns"
                 ),
             ],
-            className="row"
+            className = "row"
         ),
     ]
 )
@@ -386,7 +385,7 @@ page3_layout = html.Div(
 def update_charts_1(selected_location, click_data):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_1 = px.choropleth(data_frame = data_income,
+        fig_1 = px.choropleth(data_frame = mock_data_income,
                               geojson = counties, 
                               locationmode = "USA-states", 
                               scope = "usa",
@@ -396,16 +395,16 @@ def update_charts_1(selected_location, click_data):
                               labels = {"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
-        fig_1 = px.choropleth(data_frame=agesex_stats[data_income["FIPS"].str[:2] == selected_location],
+        fig_1 = px.choropleth(data_frame = mock_data_income,
                               geojson = counties,
-                              locationmode="USA-states",
-                              scope=selected_location.lower(),
-                              locations="FIPS",
-                              color="Value",
-                              color_continuous_scale="Viridis",
-                              labels={"Value": "Data Value"})
-    fig_1.update_geos(fitbounds="locations", visible=False)
-    fig_1.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
+                              locationmode = "USA-states",
+                              scope = selected_location.lower(),
+                              locations = "FIPS",
+                              color = "Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
+    fig_1.update_geos(fitbounds = "locations", visible=False)
+    fig_1.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
 
     return fig_1
 
@@ -434,7 +433,7 @@ def update_charts_1(selected_location, click_data):
 def update_charts_2(selected_location):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_2 = px.choropleth(data_frame = econ,
+        fig_2 = px.choropleth(data_frame = mock_data_econ,
                               geojson = counties, 
                               locationmode = "USA-states", 
                               scope = "usa",
@@ -444,15 +443,15 @@ def update_charts_2(selected_location):
                               labels = {"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
-        fig_2 = px.choropleth(data_frame = data_income[data_income["FIPS"].str[:2] == selected_location],
+        fig_2 = px.choropleth(data_frame = mock_data_econ,
                               geojson = counties,
                               locationmode = "USA-states", 
                               scope = selected_location.lower(),
                               locations = "FIPS", color="Value",
                               color_continuous_scale = "Viridis",
                               labels = {"Value": "Data Value"})
-    fig_2.update_geos(fitbounds="locations", visible=False)
-    fig_2.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
+    fig_2.update_geos(fitbounds = "locations", visible=False)
+    fig_2.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
 
     return fig_2
 
@@ -481,24 +480,24 @@ def update_charts_2(selected_location):
 def update_charts_3(selected_location):
     if selected_location == "US":
         # Create a US-level choropleth map
-        fig_3 = px.choropleth(data_frame=data_income,
+        fig_3 = px.choropleth(data_frame = mock_data_agesex_stats,
                               geojson = counties, 
-                              locationmode="USA-states", 
-                              scope="usa",
-                              locations="FIPS", 
-                              color="Value",
-                              color_continuous_scale="Viridis",
-                              labels={"Value": "Data Value"})
+                              locationmode = "USA-states", 
+                              scope = "usa",
+                              locations = "FIPS", 
+                              color = "Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
     else:
         # Create a state-level choropleth map for the selected state
-        fig_3 = px.choropleth(data_frame=income_benefit[data_income["FIPS"].str[:2] == selected_location],
+        fig_3 = px.choropleth(data_frame = mock_data_agesex_stats,
                               geojson = counties,
-                              locationmode="USA-states", scope=selected_location.lower(),
-                              locations="FIPS", color="Value",
-                              color_continuous_scale="Viridis",
-                              labels={"Value": "Data Value"})
-    fig_3.update_geos(fitbounds="locations", visible=False)
-    fig_3.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'))
+                              locationmode = "USA-states", scope=selected_location.lower(),
+                              locations = "FIPS", color="Value",
+                              color_continuous_scale = "Viridis",
+                              labels = {"Value": "Data Value"})
+    fig_3.update_geos(fitbounds = "locations", visible=False)
+    fig_3.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
 
     return fig_3
 
