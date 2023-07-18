@@ -2,8 +2,8 @@ import os
 import threading
 import pandas as pd
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from urllib.request import urlopen
@@ -72,12 +72,11 @@ with urlopen(
 # Define the page 1 layout
 page1_layout = dbc.Container(
     fluid=True,
-    style={'background-color': 'AliceBlue'},
+    style={'background-color': 'AliceBlue', 'width': '100%'},
     children=[
         dbc.Row(
             dbc.Col(
                 html.H2("Page 1 Heading", className="text-center"),
-                width={"size": 12, "offset": 0}
             )
         ),
         dbc.Row(
@@ -189,18 +188,16 @@ page1_layout = dbc.Container(
                 ),
             ),
         ),
-    ],
-    width=12  # Span all columns
+    ]
 )
 # Define the page 2 layout
 page2_layout = dbc.Container(
     fluid=True,
-    style={'background-color': 'Lavender'},
+    style={'background-color': 'Lavender', 'width': '100%'},
     children=[
         dbc.Row(
             dbc.Col(
                 html.H2("Page 2 Heading", className="text-center"),
-                width={"size": 12, "offset": 0}
             )
         ),
         dbc.Row(
@@ -312,18 +309,16 @@ page2_layout = dbc.Container(
                 ),
             ),
         ),
-    ],
-    width=12  # Span all columns
+    ]
 )
 # Define the page 3 layout
 page3_layout = dbc.Container(
     fluid=True,
-    style={'background-color': 'LightPink'},
+    style={'background-color': 'LightPink', 'width': '100%'},
     children=[
         dbc.Row(
             dbc.Col(
                 html.H2("Page 3 Heading", className="text-center"),
-                width={"size": 12, "offset": 0}
             )
         ),
         dbc.Row(
@@ -435,8 +430,7 @@ page3_layout = dbc.Container(
                 ),
             ),
         ),
-    ],
-    width=12  # Span all columns
+    ]
 )
 # Define the layout
 app.layout = dbc.Container(
