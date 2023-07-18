@@ -1,6 +1,5 @@
 import os
 import threading
-import subprocess
 import pandas as pd
 import dash
 import dash_core_components as dcc
@@ -11,9 +10,9 @@ from dash.dependencies import Input, Output
 app = dash.Dash(__name__)
 
 ''' After Initializing the app, we are expressing that we are operating in 
-current working directory to run main.py through treading and then load the 
-excel books it creates.  The dash app should be giving us a loading screen
-during this time as the calls to the API are going to take a hot minute or five
+current working directory to load the excel books it creates.  The dash 
+app should be giving us a loading screen
+during this time as the loading is going to take a hot minute
 '''
 
 # Define books as excel books to load in
@@ -25,16 +24,6 @@ books = ['2020_agesex_stats.xlsx',
 cwd = os.getcwd()
 
 file_path_dict = {}
-# Define a flag to indicate if main.py has finished running
-main_finished = False
-
-# Define a thread to run main.py
-def run_main():
-    global main_finished
-    # Run main.py from the current working directory
-    subprocess.run(["python", os.path.join(os.getcwd(), "main.py")])
-    # Set the flag to indicate that main.py has finished running
-    main_finished = True
 
 # Define a thread to load the files
 def load_files_thread():
@@ -55,21 +44,11 @@ def load_files_thread():
             # Store the DataFrame in the file_path_dict with sheet name as key
             file_path_dict[sheet_name] = data
 
-# Create a thread to run main.py
-main_thread = threading.Thread(target=run_main)
-
-# Start the thread
-main_thread.start()
-
-# Wait for the main_thread to finish before loading the files
-main_thread.join()
-
 # Create a thread to load the files
 load_files_thread = threading.Thread(target=load_files_thread)
 
 # Start the thread
 load_files_thread.start()
-
 
 # Define the layout
 app.layout = html.Div(
