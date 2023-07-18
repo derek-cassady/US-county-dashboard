@@ -10,6 +10,12 @@ from dash.dependencies import Input, Output
 # Initialize the app
 app = dash.Dash(__name__)
 
+''' After Initializing the app, we are expressing that we are operating in 
+current working directory to run main.py through treading and then load the 
+excel books it creates.  The dash app should be giving us a loading screen
+during this time as the calls to the API are going to take a hot minute or five
+'''
+
 # Define books as excel books to load in
 books = ['2020_agesex_stats.xlsx',
          '2020_econ.xlsx',
