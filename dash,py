@@ -372,8 +372,8 @@ app.layout = html.Div(
             content_style = {'width': '33.33%'},
             children = [
                 dcc.Tab(label = "Income & Benefits", value="tab-1", children = page1_layout),
-                dcc.Tab(label = "Economics", value="tab-2"),
-                dcc.Tab(label = "Age & Sex", value="tab-3"),
+                dcc.Tab(label = "Economics", value="tab-2", children = page2_layout),
+                dcc.Tab(label = "Age & Sex", value="tab-3", children = page3_layout),
             ],
         ),
         html.Div(id = "content"),
