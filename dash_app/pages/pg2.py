@@ -5,6 +5,11 @@ import plotly.express as px
 # Page Registry
 dash.register_page(__name__)
 
+layout = html.Div(
+    [
+        dcc.Markdown('# This will be the content of Page 2 and much more!')
+    ]
+)
 # df = px.data.tips()
 
 # layout = html.Div(
