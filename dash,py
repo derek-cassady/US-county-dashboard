@@ -10,36 +10,25 @@ from urllib.request import urlopen
 import json
 import plotly.express as px
 
-'''MOCK DATA FOR TESTING LAYOUT AND FUNCTIONALITY'''
-# Mock data or use placeholder values
-mock_data_income = {}
-mock_data_econ = {}
-# mock_data_agesex_stats = {}
-
 # Initialize the app
 app = dash.Dash(__name__)
 
-''' After Initializing the app, we are expressing that we are operating in 
-current working directory to load the excel books it creates.  The dash 
-app should be giving us a loading screen
-during this time as the loading is going to take a hot minute
-'''
-
 # Define books as excel books to load in
 books = [
-    '2020_agesex_stats.xlsx',
+    '2020_agesex_statistics.xlsx',
     # '2020_econ.xlsx',
     # '2020_income_benefit_data.xlsx'
-    ]
+]
 
 # Get the path of the current working directory
 cwd = os.getcwd()
 
-file_path_dict = {}
+# Dictionary to store the dataframes
+dfs = {}
 
-# Define a thread to load the files
-def load_files_thread():
-    global file_path_dict
+# Data loading function
+def load_data():
+    global dfs
     # Iterate through the books list
     for name in books:
         # Construct the full path to the .xlsx file
@@ -53,17 +42,55 @@ def load_files_thread():
             # Load each sheet as a separate DataFrame
             data = pd.read_excel(file_path, sheet_name=sheet_name, header=0)
 
-            # Store the DataFrame in the file_path_dict with sheet name as key
-            file_path_dict[sheet_name] = data
+            # Store the DataFrame in the dfs with sheet name as key
+            dfs[sheet_name] = data
 
-# Create a thread to load the files
-load_files_thread = threading.Thread(target=load_files_thread)
+# Create a thread to load the data
+data_loading_thread = threading.Thread(target=load_data)
 
-# Start the thread
-load_files_thread.start()
+# Start the data loading thread
+data_loading_thread.start()
 
-# List of DataFrame names to appear in the second dropdown
-dataframe_names = ['DF_total_all',
+# Wait for the data loading thread to finish
+data_loading_thread.join()
+
+# List of corresponding dataframe names (keys from the dataframes_dict)
+dataframe_names = list(dfs.keys())
+
+''' Load a GeoJSON file containing the geometry information for US counties, 
+    where feature.id is a FIPS code'''
+
+with urlopen(
+    'https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json'
+    ) as response:
+    counties = json.load(response)
+
+# Define a loading spinner component
+loading_spinner = dbc.Spinner(html.Div("Loading data...", id="loading-output"))
+
+# Define the main app layout
+app.layout = html.Div([
+    # Show the loading spinner while data is being loaded
+    loading_spinner,
+    # The main app layout will be displayed once data loading is complete
+    html.Div(id="app-content", style={"display": "none"}),
+    # Define the main layout containing the tabs
+    html.H1('Selected Demographics for US States and Counties', 
+            style={'textAlign': 'center'}),
+    dcc.Tabs(
+        id='tabs',
+        value='tab-1',
+        children=[
+            dcc.Tab(label="Race, Age & Sex", value='tab-1', style={'width': '33.3%', 'textAlign': 'center'}),
+            dcc.Tab(label="Economics", value='tab-2', disabled=True, style={'width': '33.3%', 'textAlign': 'center'}),
+            dcc.Tab(label="Income & Benefits", value='tab-3', disabled=True, style={'width': '33.3%', 'textAlign': 'center'})
+        ],
+        style={'display': 'flex', 'justifyContent': 'space-between'}
+    ),
+])
+
+# List of labels for the dropdown
+dropdown_labels = ['DF_total_all',
                    'DF_total_whi',
                    'DF_total_baa',
                    'DF_total_aian',
@@ -74,581 +101,171 @@ dataframe_names = ['DF_total_all',
                    'DF_total_hol'
                    ]
 
-''' Load a GeoJSON file containing the geometry information for US counties, 
-    where feature.id is a FIPS code'''
+# List of corresponding dataframe names (keys from the dataframes_dict)
+dataframe_names = list(dfs.items())
 
-with urlopen(
-    'https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json'
-    ) as response:
-    counties = json.load(response)
+# Combine the label names and dataframe names using the zip function
+dataframe_options = [{'label': label, 'value': name} for label, name in zip(dropdown_labels, dataframe_names)]
 
-# Defining the layout for each tab
-# Define the page 1 layout
-page1_layout = dbc.Container(
-    fluid=True,
-    style={'background-color': 'AliceBlue', 'width': '100%'},
-    children=[
-            dbc.Col(
-                html.H2("Page 1 Heading", className="text-center"),
-            ),
-        dbc.Row(
-            dbc.Col(
-                dcc.Dropdown(
-                    id='dataframe-dropdown-1',
-                    options=[{'label': 'DF_total_all', 'DF_total_all': 'df1'},
-                              {'label': 'DF_total_whi', 'DF_total_whi': 'df1'},
-                              {'label': 'DF_total_baa', 'DF_total_baa': 'df1'},
-                              {'label': 'DF_total_aian', 'DF_total_aian': 'df1'},
-                              {'label': 'DF_total_aa', 'DF_total_aa': 'df1'},
-                              {'label': 'DF_total_nhop', 'DF_total_nhop': 'df1'},
-                              {'label': 'DF_total_sor', 'DF_total_sor': 'df1'},
-                              {'label': 'DF_total_tom', 'DF_total_tom': 'df1'},
-                              {'label': 'DF_total_hol', 'DF_total_hol': 'df1'}
-                              ],
-                    value=dataframe_names[0],  # Default value for the first dropdown
-                    style={'width': '50%'}),
-                dcc.Dropdown(
-                    id="location-dropdown-1",  # Identifier for the dropdown component.
-                    options=[
-                        {"label": "United States", "value": "US"},
-                        {"label": "Alabama", "value": "01"},
-                        {"label": "Alaska", "value": "02"},
-                        {"label": "Arizona", "value": "04"},
-                        {"label": "Arkansas", "value": "05"},
-                        {"label": "California", "value": "06"},
-                        {"label": "Colorado", "value": "08"},
-                        {"label": "Connecticut", "value": "09"},
-                        {"label": "Delaware", "value": "10"},
-                        {"label": "Florida", "value": "12"},
-                        {"label": "Georgia", "value": "13"},
-                        {"label": "Hawaii", "value": "15"},
-                        {"label": "Idaho", "value": "16"},
-                        {"label": "Illinois", "value": "17"},
-                        {"label": "Indiana", "value": "18"},
-                        {"label": "Iowa", "value": "19"},
-                        {"label": "Kansas", "value": "20"},
-                        {"label": "Kentucky", "value": "21"},
-                        {"label": "Louisiana", "value": "22"},
-                        {"label": "Maine", "value": "23"},
-                        {"label": "Maryland", "value": "24"},
-                        {"label": "Massachusetts", "value": "25"},
-                        {"label": "Michigan", "value": "26"},
-                        {"label": "Minnesota", "value": "27"},
-                        {"label": "Mississippi", "value": "28"},
-                        {"label": "Missouri", "value": "29"},
-                        {"label": "Montana", "value": "30"},
-                        {"label": "Nebraska", "value": "31"},
-                        {"label": "Nevada", "value": "32"},
-                        {"label": "New Hampshire", "value": "33"},
-                        {"label": "New Jersey", "value": "34"},
-                        {"label": "New Mexico", "value": "35"},
-                        {"label": "New York", "value": "36"},
-                        {"label": "North Carolina", "value": "37"},
-                        {"label": "North Dakota", "value": "38"},
-                        {"label": "Ohio", "value": "39"},
-                        {"label": "Oklahoma", "value": "40"},
-                        {"label": "Oregon", "value": "41"},
-                        {"label": "Pennsylvania", "value": "42"},
-                        {"label": "Rhode Island", "value": "44"},
-                        {"label": "South Carolina", "value": "45"},
-                        {"label": "South Dakota", "value": "46"},
-                        {"label": "Tennessee", "value": "47"},
-                        {"label": "Texas", "value": "48"},
-                        {"label": "Utah", "value": "49"},
-                        {"label": "Vermont", "value": "50"},
-                        {"label": "Virginia", "value": "51"},
-                        {"label": "Washington", "value": "53"},
-                        {"label": "West Virginia", "value": "54"},
-                        {"label": "Wisconsin", "value": "55"},
-                        {"label": "Wyoming", "value": "56"}
-                    ],
-                    clearable = True,
-                    searchable = True,
-                    value="US",  # Dropdown will default to 'United States'
-                ),
-                width={"size": 12, "offset": 0}
-            ),
-        ),
-        # Row 1, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'Aquamarine'},
-                    children=[
-                        dbc.Row(
-                            dbc.Col(
-                                dcc.Graph(id="choropleth-map-1"),
-                                width={"size": 12, "offset": 0}
-                            ),
-                        ),
-                    ],
-                    className="row"
-                ),
-            ),
-        ),
-        # Row 2, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'DeepSkyBlue'},
-                    children=[
-                        dbc.Row(
-                            [
-                                # Row 2, span 1 col, left column
-                                dbc.Col(
-                                    dcc.Graph(id="pie-chart-1"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, middle column
-                                dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart-1"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, right column
-                                dbc.Col(
-                                    dcc.Graph(id="violin-chart-1"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                            ],
-                            className="row",
-                        ),
-                    ],
-                ),
-            ),
-        ),
-    ]
-)
-# Define the page 2 layout
-page2_layout = dbc.Container(
-    fluid=True,
-    style={'background-color': 'Lavender', 'width': '100%'},
-    children=[
-        dbc.Row(
-            dbc.Col(
-                html.H2("Page 2 Heading", className="text-center"),
-            )
-        ),
-        dbc.Row(
-            dbc.Col(
-                dcc.Dropdown(
-                    id="location-dropdown-2",  # Identifier for the dropdown component.
-                    options=[
-                        {"label": "United States", "value": "US"},
-                        {"label": "Alabama", "value": "01"},
-                        {"label": "Alaska", "value": "02"},
-                        {"label": "Arizona", "value": "04"},
-                        {"label": "Arkansas", "value": "05"},
-                        {"label": "California", "value": "06"},
-                        {"label": "Colorado", "value": "08"},
-                        {"label": "Connecticut", "value": "09"},
-                        {"label": "Delaware", "value": "10"},
-                        {"label": "Florida", "value": "12"},
-                        {"label": "Georgia", "value": "13"},
-                        {"label": "Hawaii", "value": "15"},
-                        {"label": "Idaho", "value": "16"},
-                        {"label": "Illinois", "value": "17"},
-                        {"label": "Indiana", "value": "18"},
-                        {"label": "Iowa", "value": "19"},
-                        {"label": "Kansas", "value": "20"},
-                        {"label": "Kentucky", "value": "21"},
-                        {"label": "Louisiana", "value": "22"},
-                        {"label": "Maine", "value": "23"},
-                        {"label": "Maryland", "value": "24"},
-                        {"label": "Massachusetts", "value": "25"},
-                        {"label": "Michigan", "value": "26"},
-                        {"label": "Minnesota", "value": "27"},
-                        {"label": "Mississippi", "value": "28"},
-                        {"label": "Missouri", "value": "29"},
-                        {"label": "Montana", "value": "30"},
-                        {"label": "Nebraska", "value": "31"},
-                        {"label": "Nevada", "value": "32"},
-                        {"label": "New Hampshire", "value": "33"},
-                        {"label": "New Jersey", "value": "34"},
-                        {"label": "New Mexico", "value": "35"},
-                        {"label": "New York", "value": "36"},
-                        {"label": "North Carolina", "value": "37"},
-                        {"label": "North Dakota", "value": "38"},
-                        {"label": "Ohio", "value": "39"},
-                        {"label": "Oklahoma", "value": "40"},
-                        {"label": "Oregon", "value": "41"},
-                        {"label": "Pennsylvania", "value": "42"},
-                        {"label": "Rhode Island", "value": "44"},
-                        {"label": "South Carolina", "value": "45"},
-                        {"label": "South Dakota", "value": "46"},
-                        {"label": "Tennessee", "value": "47"},
-                        {"label": "Texas", "value": "48"},
-                        {"label": "Utah", "value": "49"},
-                        {"label": "Vermont", "value": "50"},
-                        {"label": "Virginia", "value": "51"},
-                        {"label": "Washington", "value": "53"},
-                        {"label": "West Virginia", "value": "54"},
-                        {"label": "Wisconsin", "value": "55"},
-                        {"label": "Wyoming", "value": "56"}
-                    ],
-                    value="US",  # Dropdown will default to 'United States'
-                ),
-                width={"size": 12, "offset": 0}
-            ),
-        ),
-        # Row 1, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'LavenderBlush'},
-                    children=[
-                        dbc.Row(
-                            dbc.Col(
-                                dcc.Graph(id="choropleth-map-2"),
-                                width={"size": 12, "offset": 0}
-                            ),
-                        ),
-                    ],
-                    className="row"
-                ),
-            ),
-        ),
-        # Row 2, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'LightBlue'},
-                    children=[
-                        dbc.Row(
-                            [
-                                # Row 2, span 1 col, left column
-                                dbc.Col(
-                                    dcc.Graph(id="pie-chart-2"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, middle column
-                                dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart-2"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, right column
-                                dbc.Col(
-                                    dcc.Graph(id="violin-chart-2"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                            ],
-                            className="row",
-                        ),
-                    ],
-                ),
-            ),
-        ),
-    ]
-)
-# Define the page 3 layout
-page3_layout = dbc.Container(
-    fluid=True,
-    style={'background-color': 'LightPink', 'width': '100%'},
-    children=[
-        dbc.Row(
-            dbc.Col(
-                html.H2("Page 3 Heading", className="text-center"),
-            )
-        ),
-        dbc.Row(
-            dbc.Col(
-                dcc.Dropdown(
-                    id="location-dropdown-3",  # Identifier for the dropdown component.
-                    options=[
-                        {"label": "United States", "value": "US"},
-                        {"label": "Alabama", "value": "01"},
-                        {"label": "Alaska", "value": "02"},
-                        {"label": "Arizona", "value": "04"},
-                        {"label": "Arkansas", "value": "05"},
-                        {"label": "California", "value": "06"},
-                        {"label": "Colorado", "value": "08"},
-                        {"label": "Connecticut", "value": "09"},
-                        {"label": "Delaware", "value": "10"},
-                        {"label": "Florida", "value": "12"},
-                        {"label": "Georgia", "value": "13"},
-                        {"label": "Hawaii", "value": "15"},
-                        {"label": "Idaho", "value": "16"},
-                        {"label": "Illinois", "value": "17"},
-                        {"label": "Indiana", "value": "18"},
-                        {"label": "Iowa", "value": "19"},
-                        {"label": "Kansas", "value": "20"},
-                        {"label": "Kentucky", "value": "21"},
-                        {"label": "Louisiana", "value": "22"},
-                        {"label": "Maine", "value": "23"},
-                        {"label": "Maryland", "value": "24"},
-                        {"label": "Massachusetts", "value": "25"},
-                        {"label": "Michigan", "value": "26"},
-                        {"label": "Minnesota", "value": "27"},
-                        {"label": "Mississippi", "value": "28"},
-                        {"label": "Missouri", "value": "29"},
-                        {"label": "Montana", "value": "30"},
-                        {"label": "Nebraska", "value": "31"},
-                        {"label": "Nevada", "value": "32"},
-                        {"label": "New Hampshire", "value": "33"},
-                        {"label": "New Jersey", "value": "34"},
-                        {"label": "New Mexico", "value": "35"},
-                        {"label": "New York", "value": "36"},
-                        {"label": "North Carolina", "value": "37"},
-                        {"label": "North Dakota", "value": "38"},
-                        {"label": "Ohio", "value": "39"},
-                        {"label": "Oklahoma", "value": "40"},
-                        {"label": "Oregon", "value": "41"},
-                        {"label": "Pennsylvania", "value": "42"},
-                        {"label": "Rhode Island", "value": "44"},
-                        {"label": "South Carolina", "value": "45"},
-                        {"label": "South Dakota", "value": "46"},
-                        {"label": "Tennessee", "value": "47"},
-                        {"label": "Texas", "value": "48"},
-                        {"label": "Utah", "value": "49"},
-                        {"label": "Vermont", "value": "50"},
-                        {"label": "Virginia", "value": "51"},
-                        {"label": "Washington", "value": "53"},
-                        {"label": "West Virginia", "value": "54"},
-                        {"label": "Wisconsin", "value": "55"},
-                        {"label": "Wyoming", "value": "56"}
-                    ],
-                    value="US",  # Dropdown will default to 'United States'
-                ),
-                width={"size": 12, "offset": 0}
-            ),
-        ),
-        # Row 1, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'LightGreen'},
-                    children=[
-                        dbc.Row(
-                            dbc.Col(
-                                dcc.Graph(id="choropleth-map-3"),
-                                width={"size": 12, "offset": 0}
-                            ),
-                        ),
-                    ],
-                    className="row"
-                ),
-            ),
-        ),
-        # Row 2, span 3 col
-        dbc.Row(
-            dbc.Col(
-                html.Div(
-                    style={'background-color': 'LightSlateGrey'},
-                    children=[
-                        dbc.Row(
-                            [
-                                # Row 2, span 1 col, left column
-                                dbc.Col(
-                                    dcc.Graph(id="pie-chart-3"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, middle column
-                                dbc.Col(
-                                    dcc.Graph(id="stacked-bar-chart-3"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                                # Row 2, span 1 col, right column
-                                dbc.Col(
-                                    dcc.Graph(id="violin-chart-3"),
-                                    width={"size": 4, "offset": 0}  # Adjust the width as needed
-                                ),
-                            ],
-                            className="row",
-                        ),
-                    ],
-                ),
-            ),
-        ),
-    ]
-)
-# Define the layout
-app.layout = dbc.Container(
-    fluid=True,
-    children=[
-        dbc.Row(
-            dbc.Col(
-                html.H1("Selected US State & County Demographics", className="text-center"),
-                width={"size": 12, "offset": 0}
-            )
-        ),
-        dbc.Row(
-            dbc.Col(
-                dcc.Tabs(
-                    id="tabs",
-                    value="tab-1",
-                    style={"width": "100%"},
-                    content_style={"width": "100%"},
-                    children=[
-                        dcc.Tab(label="Income & Benefits", value="tab-1", children=page1_layout),
-                        dcc.Tab(label="Economics", value="tab-2", children=page2_layout),
-                        dcc.Tab(label="Age & Sex", value="tab-3", children=page3_layout),
-                    ],
-                ),
-                width={"size": 12, "offset": 0}
-            ),
-        ),
-        dbc.Row(
-            dbc.Col(
-                html.Div(id="content"),
-                width={"size": 12, "offset": 0}
-            ),
-        ),
-    ],
-)      
+us_state_options=[
+        # Special value for the entire US
+        {"label": "All States", "value": "ALL"},
+        {"label": "Alabama", "value": "01"},
+        {"label": "Alaska", "value": "02"},
+        {"label": "Arizona", "value": "04"},
+        {"label": "Arkansas", "value": "05"},
+        {"label": "California", "value": "06"},
+        {"label": "Colorado", "value": "08"},
+        {"label": "Connecticut", "value": "09"},
+        {"label": "Delaware", "value": "10"},
+        {"label": "Florida", "value": "12"},
+        {"label": "Georgia", "value": "13"},
+        {"label": "Hawaii", "value": "15"},
+        {"label": "Idaho", "value": "16"},
+        {"label": "Illinois", "value": "17"},
+        {"label": "Indiana", "value": "18"},
+        {"label": "Iowa", "value": "19"},
+        {"label": "Kansas", "value": "20"},
+        {"label": "Kentucky", "value": "21"},
+        {"label": "Louisiana", "value": "22"},
+        {"label": "Maine", "value": "23"},
+        {"label": "Maryland", "value": "24"},
+        {"label": "Massachusetts", "value": "25"},
+        {"label": "Michigan", "value": "26"},
+        {"label": "Minnesota", "value": "27"},
+        {"label": "Mississippi", "value": "28"},
+        {"label": "Missouri", "value": "29"},
+        {"label": "Montana", "value": "30"},
+        {"label": "Nebraska", "value": "31"},
+        {"label": "Nevada", "value": "32"},
+        {"label": "New Hampshire", "value": "33"},
+        {"label": "New Jersey", "value": "34"},
+        {"label": "New Mexico", "value": "35"},
+        {"label": "New York", "value": "36"},
+        {"label": "North Carolina", "value": "37"},
+        {"label": "North Dakota", "value": "38"},
+        {"label": "Ohio", "value": "39"},
+        {"label": "Oklahoma", "value": "40"},
+        {"label": "Oregon", "value": "41"},
+        {"label": "Pennsylvania", "value": "42"},
+        {"label": "Rhode Island", "value": "44"},
+        {"label": "South Carolina", "value": "45"},
+        {"label": "South Dakota", "value": "46"},
+        {"label": "Tennessee", "value": "47"},
+        {"label": "Texas", "value": "48"},
+        {"label": "Utah", "value": "49"},
+        {"label": "Vermont", "value": "50"},
+        {"label": "Virginia", "value": "51"},
+        {"label": "Washington", "value": "53"},
+        {"label": "West Virginia", "value": "54"},
+        {"label": "Wisconsin", "value": "55"},
+        {"label": "Wyoming", "value": "56"}
+        ]
 
-'''callback associated to dropdown2 location-dropdown-1,'dataframe-dropdown-1'
-    and choropleth-map-1 in page1_layout'''
+# Define the main layout containing the tabs
+app.layout = html.Div([
+    html.H1('Selected Demographibs for US States and Counties', 
+            style={'textAlign': 'center'}),
+    dcc.Tabs(
+        id='tabs',
+        value='tab-1',
+        children=[
+            dcc.Tab(label="Race, Age & Sex", value='tab-1', style={'width': '33.3%', 'textAlign': 'center'}),
+            dcc.Tab(label="Economics", value='tab-2', disabled=True, style={'width': '33.3%', 'textAlign': 'center'}),
+            dcc.Tab(label="Income & Benefits", value='tab-3', disabled=True, style={'width': '33.3%', 'textAlign': 'center'})
+        ],
+        style={'display': 'flex', 'justifyContent': 'space-between'}
+    ),
+])
+# Page 1 layout
+page_1_layout = html.Div([
+    # Title for the US state dropdown
+    html.H3('Select US State:'),
+
+    # Dropdown for selecting US state
+    dcc.Dropdown(
+        id='us-state-dropdown',
+        options=us_state_options,
+        value='ALL'  # Default selected value (for example, set to 'ALL' for entire US)
+    ),
+
+    # Title for the dataframe dropdown
+    html.H3('Select Dataframe:'),
+
+    dcc.Dropdown(
+    id='dataframe-dropdown',
+    options=dataframe_options,
+    value=dataframe_names[0]  # Default selected value (choose the first dataframe)
+)
+
+    # # Choropleth map component (replace 'choropleth-map' with the actual ID of your map component)
+    # dcc.Graph(id='choropleth-map'),
+])
+
+# # Callback to update the choropleth map
+# @app.callback(
+#     Output('choropleth-map', 'figure'),  # Replace 'choropleth-map' with the actual ID of your map component
+#     [Input('us-state-dropdown', 'value'), Input('dataframe-dropdown', 'value')]
+# )
+# def update_choropleth_map(selected_state, selected_dataframe):
+#     # Your code to update the choropleth map based on the selected state and dataframe
+#     # For example, if selected_state == 'ALL', display all FIPS codes for the entire US
+#     # Else, display FIPS codes for the selected state
+#     # Use the data from the selected_dataframe to populate the choropleth map
+#     # ...
+
+# Callback to display dataframe names and shapes
 @app.callback(
-    Output("choropleth-map-1", "figure"),
-    Output("pie-chart-1", "figure"),
-    Input("dataframe-dropdown-1", "value"),
-    Input('sheet-dropdown-1', 'value'),
-    Input("choropleth-map-1", "clickData")
+    Output('dataframe-info', 'children'),
+    [Input('dataframe-dropdown', 'value')]
 )
+def display_dataframe_info(selected_dataframe):
+    # Get the selected dataframe based on the value from the dropdown
+    selected_df = dfs.get(selected_dataframe)
 
-def update_charts_1(selected_sheet, selected_location, click_data):
-    # Get the selected DataFrame from the first dropdown
-    df = file_path_dict[selected_sheet]
-    if selected_location == "US":
-        # Create a US-level choropleth map
-        fig_1 = px.choropleth(data_frame = mock_data_income,
-                              geojson = counties, 
-                              locationmode = "USA-states", 
-                              scope = "usa",
-                              locations = "FIPS", 
-                              color = "Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
+    if selected_df:
+        # If the selected dataframe exists, display its name and shape
+        df_name = f"Selected Dataframe: {selected_dataframe}"
+        df_shape = f"Dataframe Shape: {selected_df.shape}"
+        return [html.H3(df_name), html.H3(df_shape)]
     else:
-        # Create a state-level choropleth map for the selected state
-        fig_1 = px.choropleth(data_frame = mock_data_income,
-                              geojson = counties,
-                              locationmode = "USA-states",
-                              scope = selected_location.lower(),
-                              locations = "FIPS",
-                              color = "Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
-    fig_1.update_geos(fitbounds = "locations", visible=False)
-    fig_1.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
+        # If the selected dataframe is not found, display an error message
+        return html.H3('Selected Dataframe not found')
 
-    return fig_1
+# page_2_layout = html.Div([
+#     html.H2('Page 2 Content', style={'width': '100%'}),
+#     # Add your content for page 2 here
+# ])
 
-    # Create or update the pie chart based on click_data
-    if click_data is not None:
-        fips_value = click_data["points"][0]["location"]
-        # Logic to generate data for the pie chart based on fips_value
-        # ...
+# page_3_layout = html.Div([
+#     html.H2('Page 3 Content', style={'width': '100%'}),
+#     # Add your content for page 3 here
+# ])
 
-        # Create the pie chart
-        pie_fig_1 = go.Figure(data=[go.Pie(labels=labels, values=values)])
+# Callback to show the main app layout when data is loaded
+@app.callback(Output("app-content", "children"), [Input("loading-output", "children")])
+def show_app_layout(loading_output):
+    # The content will be displayed once data loading is complete
+    return html.Div([
+        # Replace this with your actual app layout
+        html.H1("Your Dash App with Loaded Data!"),
+        # Add the rest of your app components here...
+    ])
 
-        return fig_1, pie_fig_1
-    else:
-        return fig_1, None
-
-'''callback associated to dropdown location-dropdown-2
-    and choropleth-map-2 in page2_layout'''
+# Callback to display Page 1 layout when the corresponding tab is selected
 @app.callback(
-    Output("choropleth-map-2", "figure"),
-    Output("pie-chart-2", "figure"),
-    Input("location-dropdown-2", "value"),
-    Input("choropleth-map-2", "clickData")
+    Output('page-content', 'children'),
+    [Input('tabs', 'value')]
 )
-
-def update_charts_2(selected_location):
-    if selected_location == "US":
-        # Create a US-level choropleth map
-        fig_2 = px.choropleth(data_frame = mock_data_econ,
-                              geojson = counties, 
-                              locationmode = "USA-states", 
-                              scope = "usa",
-                              locations = "FIPS", 
-                              color = "Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
+def display_page(tab_value):
+    if tab_value == 'tab-1':
+        return page_1_layout
+    # elif tab_value == 'tab-2':
+    #     return page_2_layout
+    # elif tab_value == 'tab-3':
+    #     return page_3_layout
     else:
-        # Create a state-level choropleth map for the selected state
-        fig_2 = px.choropleth(data_frame = mock_data_econ,
-                              geojson = counties,
-                              locationmode = "USA-states", 
-                              scope = selected_location.lower(),
-                              locations = "FIPS", color="Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
-    fig_2.update_geos(fitbounds = "locations", visible=False)
-    fig_2.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
+        return '404 - Page not found'
 
-    return fig_2
-
-    # Create or update the pie chart based on click_data
-    if click_data is not None:
-        fips_value = click_data["points"][0]["location"]
-        # Logic to generate data for the pie chart based on fips_value
-        # ...
-
-        # Create the pie chart
-        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-
-        return fig_2, pie_fig_2
-    else:
-        return fig_2, None
-
-'''callback associated to dropdown location-dropdown-3
-    and choropleth-map-3 in page3_layout'''
-@app.callback(
-    Output("choropleth-map-3", "figure"),
-    Output("pie-chart-3", "figure"),
-    Input("location-dropdown-3", "value"),
-    Input("choropleth-map-3", "clickData")
-)
-
-def update_charts_3(selected_location):
-    if selected_location == "US":
-        # Create a US-level choropleth map
-        fig_3 = px.choropleth(data_frame = mock_data_agesex_stats,
-                              geojson = counties, 
-                              locationmode = "USA-states", 
-                              scope = "usa",
-                              locations = "FIPS", 
-                              color = "Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
-    else:
-        # Create a state-level choropleth map for the selected state
-        fig_3 = px.choropleth(data_frame = mock_data_agesex_stats,
-                              geojson = counties,
-                              locationmode = "USA-states", scope=selected_location.lower(),
-                              locations = "FIPS", color="Value",
-                              color_continuous_scale = "Viridis",
-                              labels = {"Value": "Data Value"})
-    fig_3.update_geos(fitbounds = "locations", visible=False)
-    fig_3.update_layout(geo=dict(bgcolor = 'rgba(0,0,0,0)'))
-
-    return fig_3
-
-    # Create or update the pie chart based on click_data
-    if click_data is not None:
-        fips_value = click_data["points"][0]["location"]
-        # Logic to generate data for the pie chart based on fips_value
-        # ...
-
-        # Create the pie chart
-        pie_fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-
-        return fig_3, pie_fig_3
-    else:
-        return fig_3, None
-
-def render_content(tab):
-    if tab == "tab-1":
-        return page1_layout
-    elif tab == "tab-2":
-        return page2_layout
-    elif tab == "tab-3":
-        return page3_layout
-    else:
-        return html.Div("Invalid tab selected")
-
-# Run the app
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run_server(debug=True)
