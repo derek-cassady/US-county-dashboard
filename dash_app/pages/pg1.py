@@ -62,12 +62,15 @@ layout = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    dcc.Dropdown(
-                        id='race-dropdown', 
-                        options=[{'label': v[0], 'value': k} 
-                                 for k, v in dataframe_labels_dict.items()],
-                        value='DF_total_all'
-                    ),
+                    [
+                        html.H3('Race Group Selection'),
+                        dcc.Dropdown(
+                            id='race-dropdown', 
+                            options=[{'label': v[0], 'value': k} 
+                                     for k, v in dataframe_labels_dict.items()],
+                            value='DF_total_all'
+                        )
+                    ],
                     width=12
                 )
             ]
@@ -76,12 +79,23 @@ layout = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3('Title Block-1'),  # Add your title here
+                        html.H3('State Selection'),
                         dcc.Dropdown(
                             id='state-dropdown',
                             options=[{'label': state, 'value': fips} 
                                      for state, fips in state_to_fips.items()],
                             value=list(state_to_fips.values())[0]
+                        )
+                    ],
+                    width=6
+                ),
+                dbc.Col(
+                    [
+                        html.H3('Alaska'),
+                        dcc.Textarea(
+                            id='text-box',
+                            value="Alaska is not treated by Plotly Express in the same manner as other states, so it has it's own graph",
+                            style={'width': '100%'}
                         )
                     ],
                     width=6
@@ -92,14 +106,12 @@ layout = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3('Title Block-2'),  # Add your title here
                         dcc.Graph(id='choropleth-map')
                     ], 
                     width=6
                 ),
                 dbc.Col(
                     [
-                        html.H3('Title Block-3'),  # Add your title here
                         dcc.Graph(id='alaska-map')
                     ], 
                     width=6
