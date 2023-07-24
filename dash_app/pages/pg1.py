@@ -92,11 +92,14 @@ layout = html.Div(
                 dbc.Col(
                     [
                         html.H3('Alaska'),
-                        dcc.Textarea(
-                            id='text-box',
-                            value="Alaska is not treated by Plotly Express in the same manner as other states, so it has it's own graph",
-                            style={'width': '100%'}
-                        )
+                        dcc.Textarea(id='text-box',
+                                     value="Alaska is not treated by Plotly Express in the same manner as other states, so it has its' own graph.",
+                                     style={'width': '100%', 
+                                            'fontWeight': 'bold', 
+                                            'textAlign': 'center'
+                                    },
+                                    readOnly=True
+                            )
                     ],
                     width=6
                 ),
@@ -117,7 +120,21 @@ layout = html.Div(
                     width=6
                 ),
             ]
-        )
+        ),
+        dbc.Row(
+            [
+                dbc.Col(html.H3('Title Block-4'), width=4),
+                dbc.Col(html.H3('Title Block-5'), width=4),
+                dbc.Col(html.H3('Title Block-6'), width=4),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(id='pie-chart'), width=4),
+                dbc.Col(dcc.Graph(id='bar-chart'), width=4),
+                dbc.Col(dcc.Graph(id='violin-chart'), width=4),
+            ]
+        ),
     ]
 )
 
