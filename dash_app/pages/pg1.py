@@ -57,6 +57,35 @@ dataframe_labels_dict = {
 # Load the workbooks into dataframes
 dataframes = load_workbooks_into_dataframes(dataframe_labels_dict)
 
+age_cols = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14',
+            '15','16','17','18','19','20','21','22','23','24','25','26','27',
+            '28','29','30','31','32','33','34','35','36','37','38','39','40',
+            '41','42','43','44','45','46','47','48','49','50','51','52','53',
+            '54','55','56','57','58','59','60','61','62','63','64','65','66',
+            '67','68','69','70','71','72','73','74','75','76','77','78','79',
+            '80','81','82','83','84','85','86','87','88','89','90','91','92',
+            '93','94','95','96','97','98','99','102','107','110'
+           ]
+
+perc_cols = ['0_perc','1_perc','2_perc','3_perc','4_perc','5_perc','6_perc',
+             '7_perc','8_perc','9_perc','10_perc','11_perc','12_perc',
+             '13_perc','14_perc','15_perc','16_perc','17_perc','18_perc',
+             '19_perc','20_perc','21_perc','22_perc','23_perc','24_perc',
+             '25_perc','26_perc','27_perc','28_perc','29_perc','30_perc',
+             '31_perc','32_perc','33_perc','34_perc','35_perc','36_perc',
+             '37_perc','38_perc','39_perc','40_perc','41_perc','42_perc',
+             '43_perc','44_perc','45_perc','46_perc','47_perc','48_perc',
+             '49_perc','50_perc','51_perc','52_perc','53_perc','54_perc',
+             '55_perc','56_perc','57_perc','58_perc','59_perc','60_perc',
+             '61_perc','62_perc','63_perc','64_perc','65_perc','66_perc',
+             '67_perc','68_perc','69_perc','70_perc','71_perc','72_perc',
+             '73_perc','74_perc','75_perc','76_perc','77_perc','78_perc',
+             '79_perc','80_perc','81_perc','82_perc','83_perc','84_perc',
+             '85_perc','86_perc','87_perc','88_perc','89_perc','90_perc',
+             '91_perc','92_perc','93_perc','94_perc','95_perc','96_perc',
+             '97_perc','98_perc','99_perc','102_perc','107_perc','110_perc'
+             ]
+
 layout = html.Div(
     [
         dbc.Row(
@@ -135,8 +164,20 @@ layout = html.Div(
                 dbc.Col(dcc.Graph(id='violin-chart'), width=4),
             ]
         ),
+    # Hidden div to store information for charts
+    html.Div(id='selected-race', style={'display': 'none'}),
     ]
 )
+
+# Define the callback to update the selected race hidden div when a new race is selected
+@callback(
+    Output('selected-race', 'children'),
+    [Input('race-dropdown', 'value')]
+)
+# Taking current selection from 'race-dropdown', 
+# updating 'children' property of 'selected-race' div
+def update_selected_race(selected_race):
+    return selected_race
 
 # Define the callback to update the choropleth map based on the selected race and state
 @callback(
@@ -235,3 +276,34 @@ def update_alaska_map(selected_race):
         visible=False)
 
     return fig_1
+
+# Define the callback to update the pie chart
+@callback(
+    Output('pie-chart', 'figure'),
+    [Input('choropleth-map', 'clickData'),
+     Input('alaska-map', 'clickData'),
+     Input('selected-race', 'children')]  # Add this input
+)
+def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):  # Add selected_race to function args
+    # Get the clicked county FIPS from either of the maps
+    if choropleth_clickData is not None:
+        clicked_county_FIPS = choropleth_clickData['points'][0]['location']
+    elif alaska_clickData is not None:
+        clicked_county_FIPS = alaska_clickData['points'][0]['location']
+    else:
+        raise dash.exceptions.PreventUpdate  # Don't update the chart if no county is clicked
+
+    # Get the data for the clicked county
+    df = dataframes[selected_race]  # Use the selected race here
+    df = df[df['FIPS'] == clicked_county_FIPS]
+
+    # Create a new dataframe with the age group and the corresponding percentage
+    pie_df = pd.DataFrame({
+        'Age Group': age_cols,
+        'Percentage': df[perc_cols].values[0]  # Assuming there's only one row for each FIPS code
+    })
+
+    # Create the pie chart
+    fig_2 = px.pie(pie_df, values='Percentage', names='Age Group')
+
+    return fig_2
