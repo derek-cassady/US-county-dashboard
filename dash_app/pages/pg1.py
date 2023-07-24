@@ -57,7 +57,6 @@ dataframe_labels_dict = {
 # Load the workbooks into dataframes
 dataframes = load_workbooks_into_dataframes(dataframe_labels_dict)
 
-# Define the layout of the Race page
 layout = html.Div(
     [
         dbc.Row(
@@ -69,23 +68,44 @@ layout = html.Div(
                                  for k, v in dataframe_labels_dict.items()],
                         value='DF_total_all'
                     ),
-                    width=6
-                ),
+                    width=12
+                )
+            ]
+        ),
+        dbc.Row(
+            [
                 dbc.Col(
-                    dcc.Dropdown(
-                        id='state-dropdown',
-                        options=[{'label': state, 'value': fips} 
-                                 for state, fips in state_to_fips.items()],
-                        value=list(state_to_fips.values())[0]
-                    ),
+                    [
+                        html.H3('Title Block-1'),  # Add your title here
+                        dcc.Dropdown(
+                            id='state-dropdown',
+                            options=[{'label': state, 'value': fips} 
+                                     for state, fips in state_to_fips.items()],
+                            value=list(state_to_fips.values())[0]
+                        )
+                    ],
                     width=6
                 ),
             ]
         ),
-        dbc.Row([
-            dbc.Col([dcc.Graph(id='choropleth-map')], width=6),
-            dbc.Col([dcc.Graph(id='alaska-map')], width=6)
-        ])
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H3('Title Block-2'),  # Add your title here
+                        dcc.Graph(id='choropleth-map')
+                    ], 
+                    width=6
+                ),
+                dbc.Col(
+                    [
+                        html.H3('Title Block-3'),  # Add your title here
+                        dcc.Graph(id='alaska-map')
+                    ], 
+                    width=6
+                ),
+            ]
+        )
     ]
 )
 

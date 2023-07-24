@@ -24,7 +24,7 @@ navbar = dbc.Nav(
 # Container holds to page
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.Div("Selected Demographic for US and",
+        dbc.Col(html.Div("Selected Demographic for US Counties",
                          style={'fontSize':50, 'textAlign':'center'}))
     ]),
 
