@@ -44,7 +44,7 @@ nb_out = ep.preprocess(nb_in)
 
 # Launch the Dash app
 app_path = os.path.join(os.getcwd(), 'dash_app', 'app.py')
-subprocess.Popen(["python", app_path])
+subprocess.Popen([sys.executable, app_path])
 
 # Check if the Dash app is running
 # Runs indefinitely until condition inside the loop is met
