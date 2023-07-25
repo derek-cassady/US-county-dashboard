@@ -234,32 +234,15 @@ def update_choropleth(selected_race, selected_state_fips):
             )
         },
         paper_bgcolor='#D3D3D3',
-        plot_bgcolor='#D3D3D3',
+        # plot_bgcolor='#D3D3D3',
     )
+
+    fig.update_geos(bgcolor = '#D3D3D3')
 
     if selected_state_fips != 'ALL':
         fig.update_geos(fitbounds="locations", visible=False)
 
     return fig
-
-def calculate_color_scale_and_range(selected_race_df, color_column, is_alaska=False):
-    if not is_alaska:
-        # Calculate the color scale and range based on the selected race dataframe
-        min_color = selected_race_df[color_column].min()
-        max_color = selected_race_df[color_column].max()
-    else:
-        # For Alaska, calculate the color scale and range based on Alaska's data only
-        alaska_df = selected_race_df[selected_race_df['State'] == '02']
-        if alaska_df.empty:
-            # If there is no data for Alaska, set default values for the color scale
-            min_color, max_color = 0, 1
-        else:
-            min_color = alaska_df[color_column].min()
-            max_color = alaska_df[color_column].max()
-
-    tickvals = [min_color, (min_color + max_color) / 2, max_color]
-    ticktext = [f"{min_color:.2f}", f"{(min_color + max_color) / 2:.2f}", f"{max_color:.2f}"]
-    return tickvals, ticktext
 
 # Define the callback to update the Alaska map based on the selected race
 @callback(
@@ -268,50 +251,37 @@ def calculate_color_scale_and_range(selected_race_df, color_column, is_alaska=Fa
 )
 def update_alaska_map(selected_race):
     df = dataframes[selected_race]
+    df_alaska = df[df['State'] == '02']  # Filter the dataframe to get only Alaska data
+
+    min_alaska = df_alaska[dataframe_labels_dict[selected_race][1]].min()  # Calculate min
+    max_alaska = df_alaska[dataframe_labels_dict[selected_race][1]].max()  # Calculate max
+
     selected_county_features = [feature for feature in counties['features'] if feature['properties']['STATE'] == '02']
     geojson_data = {
         'type': counties['type'],
         'features': selected_county_features
     }
 
-    fig_1 = px.choropleth(df,
-                          geojson=geojson_data,
-                          locations='FIPS',
+    fig_1 = px.choropleth(df, 
+                          geojson=geojson_data, 
+                          locations='FIPS', 
                           color=dataframe_labels_dict[selected_race][1],
                           hover_name='Location',
                           hover_data=[dataframe_labels_dict[selected_race][1]],
                           color_continuous_scale="YlOrRd",
                           labels={dataframe_labels_dict[selected_race][1]: dataframe_labels_dict[selected_race][1]},
+                          range_color=[min_alaska, max_alaska]  # Set the range_color to min and max of Alaska data
                           )
-
-    fig_1.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0},
+    fig_1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                         paper_bgcolor='#D3D3D3',
-                        plot_bgcolor='#D3D3D3',
+                        # plot_bgcolor='#D3D3D3',
                         )
-
-    # Set the color scale and range to match the choropleth map
-    selected_race_df = dataframes[selected_race]
-    color_column = dataframe_labels_dict[selected_race][1]
-
-    # Check if the selected race is for Alaska
-    is_alaska = selected_race_df['State'].str.contains('02').any()
-    tickvals, ticktext = calculate_color_scale_and_range(selected_race_df, color_column, is_alaska=is_alaska)
-
-    fig_1.update_coloraxes(
-        colorbar=dict(
-            title=dict(text=color_column),
-            tickvals=tickvals,
-            ticktext=ticktext,
-        ),
-        selector=dict(type='choropleth'),
-    )
-
     fig_1.update_geos(
         lonaxis_range=[20, 380],
         projection_scale=6,
         center=dict(lat=61),
         visible=False,
-    )
+        bgcolor = '#D3D3D3')
 
     return fig_1
 
@@ -348,15 +318,16 @@ def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):
     age_df['Age Group'] = pd.to_numeric(age_df['Age Group'], errors='coerce')
     age_df['Age Category'] = pd.cut(age_df['Age Group'], bins=bins, labels=labels)
 
-    # Group by NIH age categories
+    # Group by NIH age categories and sort the dataframe
     pie_df = age_df.groupby('Age Category')['Percentage'].sum().reset_index()
+    pie_df = pie_df.sort_values('Percentage', ascending=False)
 
     # Prepare the title with location name
     location_name = 'Unknown'
     if choropleth_clickData is not None:
-        location_name = choropleth_clickData['points'][0]['hovertext']  # Access the 'Location' from hovertext
+        location_name = choropleth_clickData['points'][0]['location']
     elif alaska_clickData is not None:
-        location_name = alaska_clickData['points'][0]['hovertext']  # Access the 'Location' from hovertext
+        location_name = alaska_clickData['points'][0]['location']
 
     race_title = dataframe_labels_dict[selected_race][0]
     title = f"{race_title} - {location_name}"
@@ -381,3 +352,46 @@ def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):
     )
 
     return location_name, fig_2
+
+# Define the callback to update the histogram
+@callback(
+    Output('bar-chart', 'figure'),
+    [Input('location-clicked', 'children'),
+     Input('selected-race', 'children')]
+)
+def update_histogram(clicked_county_FIPS, selected_race):
+    if clicked_county_FIPS is None:
+        raise dash.exceptions.PreventUpdate  # Don't update the chart if no county is clicked
+
+    # Get the data for the clicked county
+    df = dataframes[selected_race]  # Use the selected race here
+    df = df[df['FIPS'] == clicked_county_FIPS]
+
+    # Create a new dataframe with the age group and the corresponding count
+    age_df = pd.DataFrame({
+        'Age': age_cols,
+        'Count': df[age_cols].values[0]  # Assuming there's only one row for each FIPS code
+    })
+
+    # Create the figure
+    fig_3 = px.histogram(age_df, x='Age', y='Count')
+
+    # Update the layout
+    fig_3.update_layout(
+        title={
+            'text': f"Age distribution in {df['Location'].iloc[0]}",
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': dict(
+                size=24,
+                color='rgb(107, 107, 107)'
+            )
+        },
+        paper_bgcolor='#D3D3D3',
+        plot_bgcolor='#D3D3D3'
+    )
+
+    fig_3.update_xaxes(tickangle=45)  # rotate x-axis labels by 45 degrees
+
+    return fig_3
