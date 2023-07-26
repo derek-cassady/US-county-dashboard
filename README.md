@@ -145,12 +145,14 @@ on your system.
 Once this is complete, the dashboard is responsive with minimal lag.
 
 ## Important Libraries
-requests
-dash
-pandas
-plotly express
-nbconvert
-openpyxl
+requests<br>
+'''pip install requests'''<br>
+[dash](https://dash.plotly.com/)<br>
+'''pip install dash'''<br>
+pandas<br>
+plotly express<br>
+nbconvert<br>
+openpyxl<br>
 
 ## Future Update
 Further visualizations for the dataframes exported to 'Statistics_Dataframes'
