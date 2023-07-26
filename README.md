@@ -122,7 +122,7 @@ Linux equivelent as pywin32 provides some Windows specific package managing and
 bindings.
 
 ### API Keys
-API have been removed from the files agesex.ipynb, econ.ipynb, and 
+API keys have been removed from the files agesex.ipynb, econ.ipynb, and 
 income_benefit.ipynb
 
 To run the entirity of the project you will need to retrieve keys from the
@@ -130,8 +130,11 @@ U.S. Census Bureau and Bureau of Economic Analysis.  Links to sign up for a key
 are provided below.  Once you have a key, past it into the location provided in
 the Jupyter Notebooks.
 
-https://api.census.gov/data/key_signup.html
-https://apps.bea.gov/api/signup/
+For files: agesex.ipynb & income_benefit.ipynb<br>
+https://api.census.gov/data/key_signup.html<br>
+
+For file: econ.ipynb<br>
+https://apps.bea.gov/api/signup/<br>
 
 ### Time
 Due to the number of API calls, exports to excel, and excel loading, the project
