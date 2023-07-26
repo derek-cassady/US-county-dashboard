@@ -142,17 +142,22 @@ can take 30 - 60 minutes to produce the dashboard.  Please be patient.  Once the
 dashboard has loaded, you will see a link in your terminal to the dashboard hosted
 on your system.
 
-Once this is complete, the dashboard is responsive with minimal lag.
+Once this is complete, the dashboard is responsive with minimal lag. When finished, CTRL + C in the terminal to end.
+
 
 ## Important Libraries
-requests<br>
-'''pip install requests'''<br>
+[requests](https://requests.readthedocs.io/en/latest/)<br>
+```pip install requests```<br>
 [dash](https://dash.plotly.com/)<br>
-'''pip install dash'''<br>
-pandas<br>
-plotly express<br>
-nbconvert<br>
-openpyxl<br>
+```pip install dash```<br>
+[pandas](https://pandas.pydata.org/)<br>
+```pip install pandas```<br>
+[plotly express](https://plotly.com/python-api-reference/plotly.express.html)<br>
+```pip install plotly-express```<br>
+[nbconvert](https://nbconvert.readthedocs.io/en/latest/)<br>
+```pip install nbconvert```<br>
+[openpyxl](https://openpyxl.readthedocs.io/en/stable/)<br>
+```pip install openpyxl```
 
 ## Future Update
 Further visualizations for the dataframes exported to 'Statistics_Dataframes'
