@@ -48,16 +48,17 @@ are noted further.
 
 ### Loading data:
 
-#### Read TWO data files (JSON, CSV, Excel, etc.).
+#### Read TWO data files.
 Data files are read in with agesex_stats.ipynb, and pg1.py.  The files are created 
 in the project and saved as .xlsx files to be loaded as needed for further processing,
 visualization, or communication.
-#### Read TWO data sets in with an API
+
+#### Read TWO data sets with an API
 API are called in agesex_stats.ipynb, and further API calls were made in econ.ipynb
 and income_benefit.ipynb which will be added to project later in the app.py
 under pg2.py and pg3.py
 
-### Clean and operate on the data while combining them:
+### Clean and operate:
 
 #### Clean your data
 Data cleaning is not needed for this project as the sources used provide clean
@@ -69,7 +70,7 @@ throughout agesex_stats.ipynb
 
 ### Visualize / Present your data:
 
-#### Make 3 matplotlib or seaborn (or another plotting library)
+#### Make 3 visuals
 The decision to use Dash as the final visualization meant more dependency on
 Plotly.  Plotly has two plotting libraries, Plotly express, and Plotly Graph objects.
 Plotly express is generally quicker to create, but has less overall customization.
@@ -81,15 +82,11 @@ increase the interactivity of the graph in a web based dashboard.  This allows t
 graph to be created in a simpler environment like a Jupyter notbook and then 
 easily transferred into a web environment.
 
-#### Make a Tableau dashboard to display your data
+#### Make a dashboard
 Dash was chosen as a web based solution for reasons stated prior in concerns
 of user accessibility.  Dash was further considered as Plotly has libraries that
 operate on other coding languages and skills learned in plotly will easily transfer
 to other languages as skills expand or others review and use code.
-
-#### Make a visualization with Bokeh. You can create interactive online visualizations
-Dash was chosen over Bokeh for reasons stated previously, however, Bokeh was
-considered.
 
 ### Best practices:
 
@@ -100,14 +97,14 @@ key to ensuring version control of libraries and python version deployments.
 
 ### Interpretation of your data:
 
-#### Annotate your code with markdown cells in Jupyter Notebook,<br> write clear code comments,<br> and have a well-written README.md. Annotate your .py files with well-written comments
+#### Annotate your code
 Commenting of code is skill that is in need of constant improvement.  Jupyter
 files are commented using a mix of markdown and in cell comments.  Commenting
 code during reviews and edit of code is ongoing for further clarity.
 
 ### GitHub:
 
-#### 5 commits is a minimum to show you’ve made multiple updates.
+#### 5 commits is a minimum
 Github updates are frequently made while making changes to code and moving from
 file to file.  Some updates are missed and best practices and good habits are
 still being built.
