@@ -456,9 +456,6 @@ def update_histogram(clicked_county_FIPS, selected_race):
     # Convert 'Age' to integer
     age_df['Age'] = age_df['Age'].astype(int)
     
-    print(age_df.head())
-    print(age_df.dtypes)
-
     # Create the figure
     fig_3 = px.bar(age_df, x='Age', y='Population',
                          hover_data={'Average_Age': ':.2f', 
