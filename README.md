@@ -94,37 +94,81 @@ considered.
 ### Best practices:
 
 #### Utilize a virtual environment
-A .venv was created and added to the .gitignore and used for all work on the
+A .venv was created, added to the .gitignore and used for all work on the
 project.  Seperating the system environment, and any project environments is 
 key to ensuring version control of libraries and python version deployments.
 
 ### Interpretation of your data:
 
-
-#### Annotate your code with markdown cells in Jupyter Notebook,<br> 
-#### write clear code comments,<br> 
-#### and have a well-written README.md.
-
-#### Annotate your .py files with well-written comments
+#### Annotate your code with markdown cells in Jupyter Notebook,<br> write clear code comments,<br> and have a well-written README.md. Annotate your .py files with well-written comments
+Commenting of code is skill that is in need of constant improvement.  Jupyter
+files are commented using a mix of markdown and in cell comments.  Commenting
+code during reviews and edit of code is ongoing for further clarity.
 
 ### GitHub:
 
 #### 5 commits is a minimum to show you’ve made multiple updates.
-
+Github updates are frequently made while making changes to code and moving from
+file to file.  Some updates are missed and best practices and good habits are
+still being built.
 
 ## How to Use
 
 ### Requirements
+This project was done in a Windows environment and uses pathing that works in 
+a windows environment.  Therefore, in its' current state, it can not be guarenteed
+to work in a Mac or Linux based system.
+
+If you would like to attempt running in a Mac or Linux based system, at minimum, you
+will need to remove 'pywin32==306' from requirements.txt and replace with the Mac or
+Linux equivelent as pywin32 provides some Windows specific package managing and
+bindings.
 
 ### API Keys
+API have been removed from the files agesex.ipynb, econ.ipynb, and 
+income_benefit.ipynb
+
+To run the entirity of the project you will need to retrieve keys from the
+U.S. Census Bureau and Bureau of Economic Analysis.  Links to sign up for a key
+are provided below.  Once you have a key, past it into the location provided in
+the Jupyter Notebooks.
+
+https://api.census.gov/data/key_signup.html
+https://apps.bea.gov/api/signup/
 
 ### Time
+Due to the number of API calls, exports to excel, and excel loading, the project
+can take 30 - 60 minutes to produce the dashboard.  Please be patient.  Once the
+dashboard has loaded, you will see a link in your terminal to the dashboard hosted
+on your system.
+
+Once this is complete, the dashboard is responsive with minimal lag.
 
 ## Important Libraries
-
-### Library decisions
+requests
+dash
+pandas
+plotly express
+nbconvert
+openpyxl
 
 ## Future Update
+Further visualizations for the dataframes exported to 'Statistics_Dataframes'
+will be added.  These will allow for further drill down into the age and sex makeup
+of each individual race in the counties of the US.
+
+Further data analysis work needs to be completed on the information pulled in
+for econ.ipynb, and income_benefit.ipynb.  Once completed, the visualizations will
+be added to pg2.py and pg3.py which will run as part of the dashboard and be intermixed
+with hoverdata in each visualization where needed.
 
 ### Known Bugs
+There are 4 -5 missing points of data for Alaska and one county in Colorado. This
+is a bug in the way the JSON file is being read for those specific FIPS codes.
+Further troubleshooting is needed to provide a workaround for the JSON load in.
+
+The Alaska choropleth map is noted as being an issue with Dash.  Currently there
+no known work around for including it in the functionality of the main map for all states.
+The Dash community has noted this issue in the community forums and in the plotly
+feature requests.
 
