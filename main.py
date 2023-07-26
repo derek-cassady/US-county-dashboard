@@ -9,8 +9,8 @@ import requests
 filename = os.path.join(os.getcwd(), 'agesex.ipynb')
 with open(filename) as aa:
     nb_in = nbformat.read(aa, nbformat.NO_CONVERT)
-
-ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+# Uses python kernel to run a jupyter notebook.  Time out is seconds and for a cell.
+ep = ExecutePreprocessor(timeout=1200, kernel_name='python3')
 
 nb_out = ep.preprocess(nb_in)
 
@@ -18,8 +18,8 @@ nb_out = ep.preprocess(nb_in)
 filename = os.path.join(os.getcwd(), 'agesex_stats.ipynb')
 with open(filename) as aa:
     nb_in = nbformat.read(aa, nbformat.NO_CONVERT)
-
-ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+# Uses python kernel to run a jupyter notebook.  Time out is seconds and for a cell.
+ep = ExecutePreprocessor(timeout=1200, kernel_name='python3')
 
 nb_out = ep.preprocess(nb_in)
 
