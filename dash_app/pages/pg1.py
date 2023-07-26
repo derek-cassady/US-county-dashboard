@@ -113,7 +113,7 @@ layout = html.Div(
                             id='state-dropdown',
                             options=[{'label': state, 'value': fips} 
                                      for state, fips in state_to_fips.items()],
-                            value=list(state_to_fips.values())[0]
+                            value=state_to_fips['United States']
                         )
                     ],
                     width=6
@@ -152,8 +152,8 @@ layout = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col(html.H3('NIH Age groups of'), width=4),
-                dbc.Col(html.H3('Title Block-5'), width=8),
+                dbc.Col(html.H3('NIH Age groups of...', style={'text-align': 'center'}), width=4),
+                dbc.Col(html.H3('Age distribution of...', style={'text-align': 'center'}), width=8),
             ]
         ),
         dbc.Row(
@@ -233,11 +233,45 @@ def update_choropleth(selected_race, selected_state_fips):
                 color='rgb(107, 107, 107)'
             )
         },
+        # Sets the chart background color. (LightGray, #D3D3D3)
         paper_bgcolor='#D3D3D3',
-        # plot_bgcolor='#D3D3D3',
     )
 
-    fig.update_geos(bgcolor = '#D3D3D3')
+    fig.update_geos(
+        bgcolor='#D3D3D3',
+        
+        # Boolean value that determines whether or not coastlines are displayed.
+        showcoastlines=True,
+        # Sets the coastline color.
+        coastlinecolor="Black",
+        # Sets the coastline line width (in px).
+        coastlinewidth=3,
+        
+        # Boolean value that determines whether or not lakes are displayed.
+        showlakes=True,
+        # Sets the lake color.
+        lakecolor="Aqua",
+        
+        # Boolean value that determines whether or not rivers are displayed.
+        showrivers=True,
+        # Sets the river color.
+        rivercolor="Blue",
+        # Sets the river line width (in px).
+        riverwidth=1,
+        
+        # Boolean value that determines whether or not land is displayed.
+        showland=True,
+        # Sets the land color. (DarkGreen, #006400)
+        landcolor="#006400",
+        
+        # Boolean value that determines whether or not state borders are displayed.
+        showsubunits=True,
+        # Sets the state border color.
+        subunitcolor="Blue",
+        # Sets the state border line width (in px).
+        subunitwidth=1,
+
+)
 
     if selected_state_fips != 'ALL':
         fig.update_geos(fitbounds="locations", visible=False)
@@ -281,7 +315,41 @@ def update_alaska_map(selected_race):
         projection_scale=6,
         center=dict(lat=61),
         visible=False,
-        bgcolor = '#D3D3D3')
+        # Sets the chart background color. (LightGray, #D3D3D3)
+        bgcolor='#D3D3D3',
+        
+        # Boolean value that determines whether or not coastlines are displayed.
+        showcoastlines=True,
+        # Sets the coastline color.
+        coastlinecolor="Black",
+        # Sets the coastline line width (in px).
+        coastlinewidth=3,
+        
+        # Boolean value that determines whether or not lakes are displayed.
+        showlakes=True,
+        # Sets the lake color.
+        lakecolor="Aqua",
+        
+        # Boolean value that determines whether or not rivers are displayed.
+        showrivers=True,
+        # Sets the river color.
+        rivercolor="Blue",
+        # Sets the river line width (in px).
+        riverwidth=1,
+        
+        # Boolean value that determines whether or not land is displayed.
+        showland=True,
+        # Sets the land color. (DarkGreen, #006400)
+        landcolor="#006400",
+        
+        # Boolean value that determines whether or not state borders are displayed.
+        showsubunits=True,
+        # Sets the state border color.
+        subunitcolor="Black",
+        # Sets the state border line width (in px).
+        subunitwidth=2,
+
+)
 
     return fig_1
 
@@ -314,7 +382,7 @@ def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):
 
     # Assign NIH age categories
     bins = [-1, 1, 12, 17, 64, float('inf')]  # Adjust the bins to reflect the changes in the age categories
-    labels = ['Neonates, Newborns, & Infants', 'Children', 'Adolescents', 'Adults', 'Older Adults']  # Adjust the labels as well
+    labels = ['Neonates, Newborns, & Infants', 'Children', 'Adolescents', 'Adults', 'Older Adults']
     age_df['Age Group'] = pd.to_numeric(age_df['Age Group'], errors='coerce')
     age_df['Age Category'] = pd.cut(age_df['Age Group'], bins=bins, labels=labels)
 
@@ -322,12 +390,11 @@ def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):
     pie_df = age_df.groupby('Age Category')['Percentage'].sum().reset_index()
     pie_df = pie_df.sort_values('Percentage', ascending=False)
 
-    # Prepare the title with location name
     location_name = 'Unknown'
     if choropleth_clickData is not None:
-        location_name = choropleth_clickData['points'][0]['location']
+        location_name = choropleth_clickData['points'][0]['hovertext']
     elif alaska_clickData is not None:
-        location_name = alaska_clickData['points'][0]['location']
+        location_name = alaska_clickData['points'][0]['hovertext']
 
     race_title = dataframe_labels_dict[selected_race][0]
     title = f"{race_title} - {location_name}"
@@ -335,21 +402,25 @@ def update_pie_chart(choropleth_clickData, alaska_clickData, selected_race):
     # Create the pie chart
     fig_2 = px.pie(pie_df, values='Percentage', names='Age Category')
 
+# Add the labels to the pie chart and remove the legend
+    fig_2.update_traces(textinfo='percent+label', textfont_size=14, textposition='outside', insidetextorientation='radial')
+    fig_2.update_layout(showlegend=False)
+
     fig_2.update_layout(
-        margin={"r": 0, "t": 50, "l": 0, "b": 0},
-        title={
-            'text': title,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': dict(
-                size=24,
-                color='rgb(107, 107, 107)'
-            )
-        },
-        paper_bgcolor='#D3D3D3',
-        plot_bgcolor='#D3D3D3',
-    )
+    margin={"r": 0, "t": 50, "l": 0, "b": 0},
+    title={
+        'text': title,
+        'x': 0.5,
+        'xanchor': 'center',
+        'yanchor': 'top',
+        'font': dict(
+            size=24,
+            color='rgb(107, 107, 107)'
+        )
+    },
+    paper_bgcolor='#D3D3D3',
+    plot_bgcolor='#D3D3D3',
+)
 
     return location_name, fig_2
 
@@ -364,22 +435,43 @@ def update_histogram(clicked_county_FIPS, selected_race):
         raise dash.exceptions.PreventUpdate  # Don't update the chart if no county is clicked
 
     # Get the data for the clicked county
-    df = dataframes[selected_race]  # Use the selected race here
-    df = df[df['FIPS'] == clicked_county_FIPS]
+    df = dataframes[selected_race].copy()  # Use the selected race here and create a copy to avoid modifying original df
+    clicked_county_df = df[df['Location'] == clicked_county_FIPS]
 
-    # Create a new dataframe with the age group and the corresponding count
+    # Check if any data exists for the clicked county
+    if clicked_county_df.empty:
+        raise dash.exceptions.PreventUpdate
+
+    # Extract average age
+    average_age = clicked_county_df['Average_Age'].values[0]
+
+# Create a new dataframe with the age group, the corresponding count, average age, and percentage
     age_df = pd.DataFrame({
         'Age': age_cols,
-        'Count': df[age_cols].values[0]  # Assuming there's only one row for each FIPS code
-    })
+        'Population': clicked_county_df[age_cols].values[0],
+        'Average_Age': [float(average_age)] * len(age_cols),
+        '_perc': clicked_county_df[perc_cols].values[0].astype(float),
+        })
+    
+    # Convert 'Age' to integer
+    age_df['Age'] = age_df['Age'].astype(int)
+    
+    print(age_df.head())
+    print(age_df.dtypes)
 
     # Create the figure
-    fig_3 = px.histogram(age_df, x='Age', y='Count')
+    fig_3 = px.bar(age_df, x='Age', y='Population',
+                         hover_data={'Average_Age': ':.2f', 
+                                     '_perc': ':.2%'},
+                         labels={'Average_Age': 'Avg Age', 
+                                 '_perc': 'Percentage'})
+
+    race_title = dataframe_labels_dict[selected_race][0]
 
     # Update the layout
     fig_3.update_layout(
         title={
-            'text': f"Age distribution in {df['Location'].iloc[0]}",
+            'text': f"{race_title} - {clicked_county_df['Location'].iloc[0]}",
             'x':0.5,
             'xanchor': 'center',
             'yanchor': 'top',
@@ -392,6 +484,7 @@ def update_histogram(clicked_county_FIPS, selected_race):
         plot_bgcolor='#D3D3D3'
     )
 
-    fig_3.update_xaxes(tickangle=45)  # rotate x-axis labels by 45 degrees
+    fig_3.update_xaxes(tickangle=315)  # rotate x-axis labels by 45 degrees
 
     return fig_3
+
