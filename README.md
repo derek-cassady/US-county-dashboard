@@ -159,6 +159,10 @@ on your system.
 
 Once this is complete, the dashboard is responsive with minimal lag. When finished, CTRL + C in the terminal to end.
 
+Some systems may encounter errors while excel files are being created, or read in.
+These are system intensive steps and errors can occur during read or write cycles, if
+you would like clean copies of the excel files to run the app only, please let me know.
+
 
 ## Important Libraries
 [requests](https://requests.readthedocs.io/en/latest/)<br>
