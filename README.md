@@ -116,6 +116,21 @@ This project was done in a Windows environment and uses pathing that works in
 a windows environment.  Therefore, in its' current state, it can not be guarenteed
 to work in a Mac or Linux based system.
 
+Please ensure that if you are using a virtual environment it is contained within the project cloned file:
+```\US-county-dashboard\.venv```
+
+In your environment, please install the requirements found in requirements.txt by doing the following:
+
+```pip install -r requirements.txt```
+
+Please verify afterwards that the following were installed with the noted versions by performing a ```pip freeze```.  If not, you will need to update them accordingly:
+
+nbclient==0.8.0<br>
+nbconvert==7.7.3<br>
+nbformat==5.9.1<br>
+ipykernel==6.25.0<br>
+ipython==8.14.0<br>
+
 If you would like to attempt running in a Mac or Linux based system, at minimum, you
 will need to remove 'pywin32==306' from requirements.txt and replace with the Mac or
 Linux equivelent as pywin32 provides some Windows specific package managing and
@@ -170,6 +185,8 @@ be added to pg2.py and pg3.py which will run as part of the dashboard and be int
 with hoverdata in each visualization where needed.
 
 ### Known Bugs
+On running requirements.txt some users are not having the proper versions of ipykernel and ipython installed.  This is a possible issue with version of PIP, but has not been verified.
+
 There are 4 -5 missing points of data for Alaska and one county in Colorado. This
 is a bug in the way the JSON file is being read for those specific FIPS codes.
 Further troubleshooting is needed to provide a workaround for the JSON load in.
