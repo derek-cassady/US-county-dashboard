@@ -27,7 +27,7 @@ While stepping away to raise a family, I have been keen to return to the
 workforce and expand on my knowledge in data analytics.  I hope to drive more
 indepth understanding of safety concerns and leading indicators by pairing
 operational, human resource, and safety data.  This would improve communications,
-training, planning, and response for all aspects of  a business in regards to 
+training, planning, and response for all aspects of a business in regards to 
 operating in safe, effecient, and qality manners.
 
 ## Code Background
@@ -54,7 +54,7 @@ in the project and saved as .xlsx files to be loaded as needed for further proce
 visualization, or communication.
 
 #### Read TWO data sets with an API
-API are called in agesex_stats.ipynb, and further API calls were made in econ.ipynb
+APIs are called in agesex_stats.ipynb, and further API calls were made in econ.ipynb
 and income_benefit.ipynb which will be added to project later in the app.py
 under pg2.py and pg3.py
 
@@ -77,10 +77,10 @@ Plotly express is generally quicker to create, but has less overall customizatio
 Plotly Express was chosen as the grphing library for this project as UX/UI is 
 not a primary consideration.
 
-Plotly express allows you to create the base graph and it to Dash where you will
+Plotly express allows you to create the base graph and add it to Dash where you will
 increase the interactivity of the graph in a web based dashboard.  This allows the
 graph to be created in a simpler environment like a Jupyter notbook and then 
-easily transferred into a web environment.
+easily transferred into a python file for further development.
 
 #### Make a dashboard
 Dash was chosen as a web based solution for reasons stated prior in concerns
@@ -98,7 +98,7 @@ key to ensuring version control of libraries and python version deployments.
 ### Interpretation of your data:
 
 #### Annotate your code
-Commenting of code is skill that is in need of constant improvement.  Jupyter
+Commenting of code is a skill that is in need of constant improvement.  Jupyter
 files are commented using a mix of markdown and in cell comments.  Commenting
 code during reviews and edit of code is ongoing for further clarity.
 
