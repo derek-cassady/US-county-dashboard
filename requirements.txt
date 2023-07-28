@@ -1,7 +1,7 @@
 ansi2html==1.8.0
-asttokens==2.2.1
+asttokens==2.2.1      
 attrs==23.1.0
-backcall==0.2.0
+backcall==0.2.0       
 beautifulsoup4==4.12.2
 bleach==6.0.0
 certifi==2023.7.22
@@ -73,3 +73,4 @@ urllib3==2.0.4
 wcwidth==0.2.6
 webencodings==0.5.1
 Werkzeug==2.2.3
+XlsxWriter==3.1.2
