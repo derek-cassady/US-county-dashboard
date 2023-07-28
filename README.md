@@ -209,19 +209,19 @@ with data to that specific county.
 ### Visuals / Screenshots
 
 #### Landing Page
-![My Image](Planning\Screen_1.PNG)<br>
+![My Image](Planning/Screen_1.PNG)<br>
 
 #### Landing Page (lower graphs)
-![My Image](Planning\Screen_2.PNG)<br>
+![My Image](Planning/Screen_2.PNG)<br>
 
 #### Race Dropdown
-![My Image](Planning\Screen_3.PNG)<br>
+![My Image](Planning/Screen_3.PNG)<br>
 
 #### State Dropdown
-![My Image](Planning\Screen_4.PNG)<br>
+![My Image](Planning/Screen_4.PNG)<br>
 
 #### State Map
-![My Image](Planning\Screen_5.PNG)<br>
+![My Image](Planning/Screen_5.PNG)<br>
 
 #### Lower Graphs after click in map
-![My Image](Planning\Screen_6.PNG)<br>
+![My Image](Planning/Screen_6.PNG)<br>
