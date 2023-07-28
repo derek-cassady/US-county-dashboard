@@ -3,32 +3,32 @@
 ## Project Background
 This is the capstone project for Code Louisville Data Analysis 2.  The purpose 
 of the project is to source demographic data for the population of the US and 
-provide a general analysis to be explored through interactive dashboard.
+provide a general analysis to be explored through an interactive dashboard.
 
-In industry and practice, providiing easy to navigate visual data to end users 
+In industry and practice, providing easy to navigate visual data to end users 
 is key to communication.  The more barriers placed in front of the end user
 in accessing and operating analytics tools and reporting, the less effective the 
 communication will be.
 
-By stepping away from Excel, PowerBI, Tablaue and PowerPoint, we use a Python
-Library called Dash which allows an interactive dashboard accessible by any web
+By stepping away from Excel, PowerBI, Tableau, and PowerPoint, we use a Python
+Library called Dash which allows an interactive dashboard to be accessible by any web
 browser.  This allows information to be consistently updated on the backend and
 readily available to all users through a static source.  Allowing users ease of
 access without having to search for the latest email and open files.
 
 ## Coder / Analyst Background
 I have a Bachelors of Science in Occupational Health and Safety.  After working
-for many years, as a First Responder I transferred my skills to industry.  I 
-spent many years as a Safety Specialist for Amazon Fullfulment where I travelled
-to many sites creating solution based training from opperational and safety data
+for many years as a First Responder, I transferred my skills to industry.  I 
+spent many years as a Safety Specialist for Amazon Fulfillment where I travelled
+to many sites creating solution based training from operational and safety data
 and as a member of the internal audit teams.
 
 While stepping away to raise a family, I have been keen to return to the 
 workforce and expand on my knowledge in data analytics.  I hope to drive more
-indepth understanding of safety concerns and leading indicators by pairing
+in depth understanding of safety concerns and leading indicators by pairing
 operational, human resource, and safety data.  This would improve communications,
 training, planning, and response for all aspects of a business in regards to 
-operating in safe, effecient, and qality manners.
+operating in safe, efficient, and quality manners.
 
 ## Code Background
 The skills seen in the coding are after two 12 week courses through Code Louisville.
@@ -36,14 +36,14 @@ With very little experience in data analytics and only using Excel without VBA.
 
 The coder chose to use ChatGPT 3.5 as a code assistant.  The purpose of choosing
 this was to increase usage of methodology outside of the comfort zone of the 
-coder.  Using ChatGPT 3.5 with its' known limitations and current state of being
-out of date in many libraries and techniques would require accesing documentation and
+coder.  Using ChatGPT 3.5 with its known limitations and current state of being
+out of date in many libraries and techniques would require accessing documentation and
 problem solving beyond the learned skills.
 
 ## Project Requirements / Features
 The project requirements come from a supplied table by Code Louisville.  The 
 individual is allowed to choose at least one feature from each requirement 
-section. The sections are listed below and the requirement location in the project
+section. The sections are listed below and the requirement locations in the project
 are noted further.
 
 ### Loading data:
@@ -54,46 +54,46 @@ in the project and saved as .xlsx files to be loaded as needed for further proce
 visualization, or communication.
 
 #### Read TWO data sets with an API
-APIs are called in agesex_stats.ipynb, and further API calls were made in econ.ipynb
-and income_benefit.ipynb which will be added to project later in the app.py
+APIs are called in agesex.ipynb, and further API calls were made in econ.ipynb
+and income_benefit.ipynb which will be added to the project later in the app.py
 under pg2.py and pg3.py
 
 ### Clean and operate:
 
 #### Clean your data
 Data cleaning is not needed for this project as the sources used provide clean
-data through their APIs.  However, due to number of zeroes in the data, there
+data through their APIs.  However, due to number of zeros in the data, there
 are many corrections made to deal with the zeros without causing 'NaN' issues.
 
-Data combination, and further analysis of the data from the API pull is done
+Data combination and further analysis of the data from the API pull is done
 throughout agesex_stats.ipynb
 
 ### Visualize / Present your data:
 
 #### Make 3 visuals
 The decision to use Dash as the final visualization meant more dependency on
-Plotly.  Plotly has two plotting libraries, Plotly express, and Plotly Graph objects.
-Plotly express is generally quicker to create, but has less overall customization.
-Plotly Express was chosen as the grphing library for this project as UX/UI is 
+Plotly.  Plotly has two plotting libraries, Plotly Express and Plotly Graph objects.
+Plotly Express is generally quicker to create, but has less overall customization.
+Plotly Express was chosen as the graphing library for this project as UX/UI is 
 not a primary consideration.
 
-Plotly express allows you to create the base graph and add it to Dash where you will
+Plotly Express allows you to create the base graph and add it to Dash where you will
 increase the interactivity of the graph in a web based dashboard.  This allows the
-graph to be created in a simpler environment like a Jupyter notbook and then 
-easily transferred into a python file for further development.
+graph to be created in a simpler environment like a Jupyter Notebook and then 
+easily transferred into a Python file for further development.
 
 #### Make a dashboard
-Dash was chosen as a web based solution for reasons stated prior in concerns
+Dash was chosen as a web based solution for reasons stated previously in concerns
 of user accessibility.  Dash was further considered as Plotly has libraries that
-operate on other coding languages and skills learned in plotly will easily transfer
+operate on other coding languages and skills learned in Plotly will easily transfer
 to other languages as skills expand or others review and use code.
 
 ### Best practices:
 
 #### Utilize a virtual environment
 A .venv was created, added to the .gitignore and used for all work on the
-project.  Seperating the system environment, and any project environments is 
-key to ensuring version control of libraries and python version deployments.
+project.  Separating the system environment and any project environments is 
+key to ensuring version control of libraries and Python version deployments.
 
 ### Interpretation of your data:
 
@@ -113,7 +113,7 @@ still being built.
 
 ### Requirements
 This project was done in a Windows environment and uses pathing that works in 
-a windows environment.  Therefore, in its' current state, it can not be guarenteed
+a windows environment.  Therefore, in its current state, it can not be guaranteed
 to work in a Mac or Linux based system.
 
 Please ensure that if you are using a virtual environment it is contained within the project cloned file:
@@ -142,7 +142,7 @@ income_benefit.ipynb
 
 To run the entirity of the project you will need to retrieve keys from the
 U.S. Census Bureau and Bureau of Economic Analysis.  Links to sign up for a key
-are provided below.  Once you have a key, past it into the location provided in
+are provided below.  Once you have a key, paste it into the location provided in
 the Jupyter Notebooks.
 
 For files: agesex.ipynb & income_benefit.ipynb<br>
@@ -160,7 +160,7 @@ on your system.
 Once this is complete, the dashboard is responsive with minimal lag. When finished, CTRL + C in the terminal to end.
 
 Some systems may encounter errors while excel files are being created, or read in.
-These are system intensive steps and errors can occur during read or write cycles, if
+These are system intensive steps and errors can occur during read or write cycles. If
 you would like clean copies of the excel files to run the app only, please let me know.
 
 
@@ -195,8 +195,33 @@ There are 4 -5 missing points of data for Alaska and one county in Colorado. Thi
 is a bug in the way the JSON file is being read for those specific FIPS codes.
 Further troubleshooting is needed to provide a workaround for the JSON load in.
 
-The Alaska choropleth map is noted as being an issue with Dash.  Currently there
-no known work around for including it in the functionality of the main map for all states.
-The Dash community has noted this issue in the community forums and in the plotly
+The Alaska choropleth map is noted as being an issue with Dash.  Currently there is
+no known workaround for including it in the functionality of the main map for all states.
+The Dash community has noted this issue in the community forums and in the Plotly
 feature requests.
 
+### Navigation
+Once the visuals have loaded, select a race from the race dropdown, or leave on 
+the default value.  You can then select a state or click on any county in either
+one of the maps.  Once you click on a county, the two lower graphs will populate
+with data to that specific county.
+
+### Visuals / Screenshots
+
+#### Landing Page
+![My Image](Planning\Screen_1.PNG)<br>
+
+#### Landing Page (lower graphs)
+![My Image](Planning\Screen_2.PNG)<br>
+
+#### Race Dropdown
+![My Image](Planning\Screen_3.PNG)<br>
+
+#### State Dropdown
+![My Image](Planning\Screen_4.PNG)<br>
+
+#### State Map
+![My Image](Planning\Screen_5.PNG)<br>
+
+#### Lower Graphs after click in map
+![My Image](Planning\Screen_6.PNG)<br>
