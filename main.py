@@ -4,6 +4,9 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import subprocess
 import requests
+import time
+
+start_time = time.time()  # start time of the script
 
 # Update the path to agesex.ipynb
 filename = os.path.join(os.getcwd(), 'agesex.ipynb')
@@ -14,14 +17,14 @@ ep = ExecutePreprocessor(timeout=1200, kernel_name='python3')
 
 nb_out = ep.preprocess(nb_in)
 
-# Update the path to agesex_stats.ipynb
-filename = os.path.join(os.getcwd(), 'agesex_stats.ipynb')
-with open(filename) as aa:
-    nb_in = nbformat.read(aa, nbformat.NO_CONVERT)
-# Uses python kernel to run a jupyter notebook.  Time out is seconds and for a cell.
-ep = ExecutePreprocessor(timeout=1200, kernel_name='python3')
+# # Update the path to agesex_stats.ipynb
+# filename = os.path.join(os.getcwd(), 'agesex_stats.ipynb')
+# with open(filename) as aa:
+#     nb_in = nbformat.read(aa, nbformat.NO_CONVERT)
+# # Uses python kernel to run a jupyter notebook.  Time out is seconds and for a cell.
+# ep = ExecutePreprocessor(timeout=1200, kernel_name='python3')
 
-nb_out = ep.preprocess(nb_in)
+# nb_out = ep.preprocess(nb_in)
 
 # '''Open and run the econ notebook'''
 # filename = 'econ.ipynb'
@@ -42,23 +45,26 @@ nb_out = ep.preprocess(nb_in)
 
 # nb_out = ep.preprocess(nb_in)
 
-# Launch the Dash app
-app_path = os.path.join(os.getcwd(), 'dash_app', 'app.py')
-subprocess.Popen([sys.executable, app_path])
+# # Launch the Dash app
+# app_path = os.path.join(os.getcwd(), 'dash_app', 'app.py')
+# subprocess.Popen([sys.executable, app_path])
 
-# Check if the Dash app is running
-# Runs indefinitely until condition inside the loop is met
-while True:
-    try:
-        # GET request to local server where the Dash app should be running
-        response = requests.get("http://127.0.0.1:8050/")
-        # '200', it means the app is up and running
-        if response.status_code == 200:
-            # executed, loop is broken
-            break
-        # Server is not yet running or is not reachable
-    except requests.exceptions.ConnectionError:
-        pass
+# # Check if the Dash app is running
+# # Runs indefinitely until condition inside the loop is met
+# while True:
+#     try:
+#         # GET request to local server where the Dash app should be running
+#         response = requests.get("http://127.0.0.1:8050/")
+#         # '200', it means the app is up and running
+#         if response.status_code == 200:
+#             # executed, loop is broken
+#             break
+#         # Server is not yet running or is not reachable
+#     except requests.exceptions.ConnectionError:
+#         pass
 
+end_time = time.time()  # end time of the script
+
+print(f'Time taken to run the entire script: {end_time - start_time} seconds')  # prints time taken to run the script
 # App is running, main.py can exit
 sys.exit()
